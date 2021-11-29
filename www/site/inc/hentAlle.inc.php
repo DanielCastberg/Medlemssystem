@@ -8,7 +8,12 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
 
 require 'dbConnect.inc.php';
 
-$sql = "SELECT * from medlemmer";                            //Definerer spørring
+$sql = 'SELECT id as ID, fornavn AS Navn, etternavn AS Etternavn, 
+tlf AS Telefonnummer, mail AS "E-post", fodselsdato AS Fødselsdato, 
+medlemSidenDato AS "Medlem siden", kontigentstatus AS "Status" 
+FROM medlemmer 
+ORDER by kontigentstatus DESC, id; ';   //Definerer spørring
+                         
 
 $con = dbConnect();
 
@@ -26,7 +31,7 @@ mysqli_close($con);                                          //Lukker DB-connect
 <html>
     <body>
         <p>
-            
+            <a href = "forside.inc.php">Tilbake til forsiden </a>
             <br>
         <p>
             <b>Medlemmene er som følger:</b>
@@ -44,10 +49,10 @@ mysqli_close($con);                                          //Lukker DB-connect
                                 case 1: $val = "Mann";           break;
                             }
                         }
-                        elseif ($navn == "kontigentstatus"){
+                        elseif ($navn == "Status"){
                             switch ($verdi){
-                                case 0: $val = "Ikke betalt";    break;
-                                case 1: $val = "Betalt";         break;
+                                case 0: $val = "Inaktiv";    break;
+                                case 1: $val = "Aktiv";         break;
                             }
                         }
                         else{

@@ -19,9 +19,9 @@ class medlem{
     private $fodselsdato;
     private $kjonn;
 
-    private $roller;
-    private $interesser;
-    private $aktiviteter;
+    private $roller      = array();
+    private $interesser  = array();
+    private $aktiviteter = array();
     private $dato;
     private $kontigentstatus;
 
@@ -109,6 +109,7 @@ class medlem{
                 case 'interesser':      $this->interesser = $v;         break;
                 case 'aktiviteter':     $this->aktiviteter = $v;        break;
                 case 'dato':            $this->dato = $v;               break;
+                case 'medlemSidenDato': $this->dato = $v;               break;
                 case 'kontigentstatus': $this->kontigentstatus = $v;    break;
             }
         }
@@ -158,23 +159,23 @@ class medlem{
         $m_query = "SELECT * FROM medlemmer WHERE
             medlemmer.mail='" . $mail . "'";
 
-        $r_query = "SELECT roller.navn
+        $r_query = "SELECT roller.navn AS roller
             FROM medlemmer
             JOIN rolleregister on medlemmer.id = rolleregister.mid
             JOIN roller on rolleregister.rid = roller.id
-            WHERE medlemmer.id ='" . $mail . "'";
+            WHERE medlemmer.mail ='" . $mail . "'";
 
-        $a_query = "SELECT aktiviteter.navn
+        $a_query = "SELECT aktiviteter.navn AS aktiviteter
             FROM medlemmer
             JOIN aktivitetspåmelding on medlemmer.id = aktivitetspåmelding.mid
             JOIN aktiviteter on aktivitetspåmelding.aid = aktiviteter.id
-            WHERE medlemmer.id ='" . $mail . "'";
+            WHERE medlemmer.mail ='" . $mail . "'";
 
-        $i_query = "SELECT interesser.navn
+        $i_query = "SELECT interesser.navn AS interesser
             FROM medlemmer
             JOIN interesseregister on medlemmer.id = interesseregister.mid
             JOIN interesser on interesseregister.iid = interesser.id
-            WHERE medlemmer.id ='" . $mail . "'";
+            WHERE medlemmer.mail ='" . $mail . "'";
 
 
         $result = mysqli_query($con, $m_query);           
@@ -183,15 +184,21 @@ class medlem{
 
         $result = mysqli_query($con, $r_query);           
         $r = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        $medlemArr["roller"] = $r[0];
+        foreach($r as $verdi){
+        $medlemArr["roller"][] = $verdi['roller'];
+        }
         
         $result = mysqli_query($con, $a_query);           
         $a = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        $medlemArr["aktiviteter"] = $a[0];
+        foreach($a as $verdi){
+        $medlemArr["aktiviteter"][] = $verdi['aktiviteter'];
+        }   
         
         $result = mysqli_query($con, $i_query);           
         $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        $medlemArr["interesser"] = $i[0];
+        foreach($i as $verdi){
+        $medlemArr["interesser"][] = $verdi['interesser'];
+        }
 
         $medlem = medlem::nyttMedlem($medlemArr);
         return $medlem;
@@ -199,29 +206,6 @@ class medlem{
 
 
 ///////////         funk for å endre
-
-        
-/*
-    private $id;
-    private $fornavn;
-    private $etternavn;
-    private $adresse;
-
-    private $postnummer;
-    private $poststed;
-    private $tlf;
-    private $mail;
-    private $fodselsdato;
-    private $kjonn;
-
-    private $roller;
-    private $interesser;
-    private $aktiviteter;
-    private $dato;
-    private $kontigentstatus;
-
-*/
-
 
 
 }
