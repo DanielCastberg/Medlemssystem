@@ -1,6 +1,6 @@
 <?php
-session_start();
 require '../lib/medlem.class.php';
+session_start();
 
 if(!isset($_SESSION['bruker']['innlogget']) ||
     $_SESSION['bruker']['innlogget'] !== true) {
@@ -23,13 +23,15 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
         <p>
             <a href = "hentAlle.inc.php">Vis alle medlemmer </a><br>
             <a href = "hentMedlemmer.inc.php">Vis medlemmer </a><br>   
-            <a href = "nyttMedlem.inc.php">Nytt medlem </a><br> 
-            <a href = "endreMedlem.inc.php">Endre Medlem </a><br>
-
+            
+            <?php
+                if(in_array("admin", $arr['roller'])){
+                    echo '<a href = "nyttMedlem.inc.php">Nytt medlem </a><br> 
+                          <a href = "endreMedlem.inc.php">Endre Medlem </a><br>';
+                }       
+            ?>
         <p>
-
-            <a href = "loggUt.inc.php">Logg Ut </a>
-
+            <a href = "loggUt.inc.php">Logg Ut </a><br><br>
         </p>
     </body>
 
