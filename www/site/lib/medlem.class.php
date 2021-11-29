@@ -114,7 +114,7 @@ class medlem{
         }
     }
 
-    public function getVerdier(){
+    public function getArr(){
 
         $arr = array(
             'id'                => $this->id,
@@ -142,10 +142,59 @@ class medlem{
         if(medlem::sjekkOmGyldig($arr)){
 
             $obj = new medlem();
-
             $obj->setVerdier($arr);
+            return $obj;
         }
-            
+        
+        return 0;
+    }
+
+    public static function medlemFraDB($mail){
+
+        require_once '../inc/dbConnect.inc.php';
+
+        $con = dbConnect();
+
+        $m_query = "SELECT * FROM medlemmer WHERE
+            medlemmer.mail='" . $mail . "'";
+
+        $r_query = "SELECT roller.navn
+            FROM medlemmer
+            JOIN rolleregister on medlemmer.id = rolleregister.mid
+            JOIN roller on rolleregister.rid = roller.id
+            WHERE medlemmer.id ='" . $mail . "'";
+
+        $a_query = "SELECT aktiviteter.navn
+            FROM medlemmer
+            JOIN aktivitetspåmelding on medlemmer.id = aktivitetspåmelding.mid
+            JOIN aktiviteter on aktivitetspåmelding.aid = aktiviteter.id
+            WHERE medlemmer.id ='" . $mail . "'";
+
+        $i_query = "SELECT interesser.navn
+            FROM medlemmer
+            JOIN interesseregister on medlemmer.id = interesseregister.mid
+            JOIN interesser on interesseregister.iid = interesser.id
+            WHERE medlemmer.id ='" . $mail . "'";
+
+
+        $result = mysqli_query($con, $m_query);           
+        $m = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $medlemArr = $m[0];                             //Arr med medlemsdata
+
+        $result = mysqli_query($con, $r_query);           
+        $r = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $medlemArr["roller"] = $r[0];
+        
+        $result = mysqli_query($con, $a_query);           
+        $a = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $medlemArr["aktiviteter"] = $a[0];
+        
+        $result = mysqli_query($con, $i_query);           
+        $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $medlemArr["interesser"] = $i[0];
+
+        $medlem = medlem::nyttMedlem($medlemArr);
+        return $medlem;
     }
 
 
