@@ -101,10 +101,22 @@ if (isset($_POST['contact-send'])){
             </select>
         
             <label for="aktiviteter[]">Kursaktiviteter</label>
-            <select multiple name="aktiviteter[]" >          
-                <option value="1">Fotballkurs</option>
-                <option value="2">Biljardturnering</option>
-                <option value="3">Dartturnering</option>
+            <select multiple name="aktiviteter[]" > 
+                
+                <?php //Henter alternativer fra DB
+                $con = dbConnect();
+                $query = "SELECT id, navn FROM aktiviteter";
+
+                $result = mysqli_query($con, $query);           
+                $rader = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                print_r($rader);
+                
+                foreach($rader as $index => $verdi){
+                    echo '<option value="' . $verdi['id'] . '">' . $verdi['navn'] . '</option>';
+                }
+                ?>
+
             </select>
 
             <label for="roller[]">Roller</label>
