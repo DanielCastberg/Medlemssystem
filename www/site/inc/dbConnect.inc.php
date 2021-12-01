@@ -1,5 +1,5 @@
 <?php
-/*
+/*                      Filen er erstattet med mysqli.inc.php pga rare bugs
 function dbConnect(){
 
     $user = 'root';
