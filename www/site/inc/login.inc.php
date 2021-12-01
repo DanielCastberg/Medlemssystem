@@ -1,7 +1,6 @@
 <?php
-
-require 'dbConnect.inc.php';
-require '../lib/medlem.class.php';
+require 'mysqli.inc.php';
+include_once '../lib/medlem.class.php';
 
 if(isset($_REQUEST['loggin'])){
 
