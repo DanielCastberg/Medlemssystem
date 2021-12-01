@@ -22,12 +22,13 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
     <body>
         <p>
             <a href = "hentAlle.inc.php">Vis alle medlemmer </a><br>
-            <a href = "hentMedlemmer.inc.php">Vis medlemmer </a><br>   
+            <a href = "hentMedfilter.inc.php">Finn medlemmer </a><br>   
             
             <?php
                 if(in_array("admin", $arr['roller'])){
                     echo '<a href = "nyttMedlem.inc.php">Nytt medlem </a><br> 
-                          <a href = "endreMedlem.inc.php">Endre Medlem </a><br>';
+                          <a href = "endreMedlem.inc.php">Endre Medlem </a><br>
+                          <a href = "nyAkticitet.inc.php">Legg til aktiviteter </a><br>';
                 }       
             ?>
         <p>

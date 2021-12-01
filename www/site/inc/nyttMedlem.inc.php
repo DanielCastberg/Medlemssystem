@@ -4,14 +4,15 @@ require '../lib/medlem.class.php';
 
 session_start();
 
-$brukerObj = unserialize($_SESSION['bruker']['medlem']);
-$brukerArr = $brukerObj->getArr();
-
 if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
     ($_SESSION['bruker']['innlogget'] !== true)) {
     header("Location: login.inc.php");
     exit();
-}elseif (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
+}
+$brukerObj = unserialize($_SESSION['bruker']['medlem']);
+    $brukerArr = $brukerObj->getArr();
+
+if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
     header("Location: forside.inc.php");
     exit();
 }
@@ -54,7 +55,6 @@ if (isset($_POST['contact-send'])){
     </head>
 
     <body>
-        <pre>
         <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <p>
             <a href = "forside.inc.php">Tilbake til forsiden </a>
@@ -149,7 +149,6 @@ if (isset($_POST['contact-send'])){
         <p>               <!––"send" knapp -->
             <button type="submit" name="contact-send">Send</button>                       
         </p>
-</pre>
 </form>
 </body> 
 </html>
