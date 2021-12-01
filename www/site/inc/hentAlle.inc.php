@@ -6,7 +6,7 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
     exit();
 }
 
-require 'dbConnect.inc.php';
+require 'mysqli.inc.php';
 
 $sql = 'SELECT id as ID, fornavn AS Navn, etternavn AS Etternavn, 
 tlf AS Telefonnummer, mail AS "E-post", fodselsdato AS Fødselsdato, 

@@ -4,7 +4,7 @@
 //
 //Ikke ferdig
 
-
+require_once '../inc/mysqli.inc.php';
 
 class medlem{
     private $id;
@@ -26,13 +26,10 @@ class medlem{
     private $kontigentstatus;
 
 
-    private static function sjekkOmGyldig($arr){
+    public static function sjekkOmGyldig($arr){        //Henter array med evt feilmeldinger
     
         $messages = array();    //Lagrer feilmeldinger i array
 
-        if (empty($arr['id'])){   //Setter inn feilmeldinger
-            $messages[] = "Du må fylle inn ID";                 
-        }
         if (empty($arr['fornavn'])){   
             $messages[] = "Du må fylle inn fornavn";            
         }
@@ -48,10 +45,7 @@ class medlem{
         }
         elseif((1000 > $arr['postnummer']) || 
             ( $arr['postnummer'] > 9999 )){
-                $messages[] = "Ugyldig postnummer";    
-            }
-        if (empty($arr['poststed'])){   
-            $messages[] = "Du må fylle inn poststed";           
+                $messages[] = "Ugyldig postnummer";          
         }
 
         if (empty($arr['tlf'])){   
@@ -81,16 +75,11 @@ class medlem{
         if (empty($arr['kontigentstatus'])){  
             $messages[] = "Du må fylle inn kontigentstatus";    
         }
-
     
-
-        if (!empty($messages)){                                         //Skriver ut hvis det fins feilmeldinger        
-            return $messages;
-        }else {return true;}
+        return $messages;
     }
 
-
-    public function setVerdier($arr){
+    public function setVerdier($arr){             //Lager objekt fra array
 
         foreach($arr as $k => $v){
 
@@ -115,7 +104,7 @@ class medlem{
         }
     }
 
-    public function getArr(){
+    public function getArr(){                     //Henter Array med verdier
 
         $arr = array(
             'id'                => $this->id,
@@ -138,16 +127,11 @@ class medlem{
         return $arr;
     }
 
-    public static function nyttMedlem($arr){
+    public static function lagMedlem($arr){      //Returnerer obj
 
-        if(medlem::sjekkOmGyldig($arr)){
-
-            $obj = new medlem();
-            $obj->setVerdier($arr);
-            return $obj;
-        }
-        
-        return 0;
+        $obj = new medlem();
+        $obj->setVerdier($arr);
+        return $obj;
     }
 
     public static function medlemFraDB($mail){
@@ -200,15 +184,72 @@ class medlem{
         $medlemArr["interesser"][] = $verdi['interesser'];
         }
 
-        $medlem = medlem::nyttMedlem($medlemArr);
+        $medlem = medlem::lagMedlem($medlemArr);
         return $medlem;
     }
+
+    public function sendTilDB(){                //Laster objekt opp på DB
+        $con = dbConnect();
+        $m_query = $con->prepare('INSERT INTO medlemmer(medlemmer.fornavn, 
+        medlemmer.etternavn, medlemmer.adresse, medlemmer.postnummer, 
+        medlemmer.tlf, medlemmer.mail, medlemmer.fodselsdato, 
+        medlemmer.kjonn, medlemmer.medlemSidenDato, medlemmer.kontigentstatus)
+        VALUES(?,?,?,?,?,?,?,?,?,?)');
+
+        $m_query->bind_param('sssiissisi', $this->fornavn, $this->etternavn, 
+        $this->adresse, $this->postnummer, $this->tlf, $this->mail, 
+        $this->fodselsdato, $this->kjonn, $this->dato, $this->kontigentstatus);
+
+        $m_query->execute();
+
+        $i_query = "SELECT id FROM medlemmer WHERE     
+        mail = '" . $this->mail . "';";
+
+        $result = mysqli_query($con, $i_query);     //Henter id fra DB
+        $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        mysqli_free_result($result);                //Frigir minne
+        $this->id = $i[0]["id"];                          //Legger id i variabel
+
+        foreach ($this->interesser as $interesse){
+
+            $sqlInsertInteresse = $con->prepare
+                ('INSERT INTO interesseregister (mid, iid)
+                VALUES (?, ?)'
+            );
+            $sqlInsertInteresse->bind_param( "ii", $this->id, $interesse);
+            $sqlInsertInteresse->execute();
+            $sqlInsertInteresse->close();
+        }
+        foreach ($this->roller as $rolle){
+
+            $sqlInsertRolle = $con->prepare
+                ('INSERT INTO rolleregister (mid, rid)
+                VALUES (?, ?)'
+            );
+            $sqlInsertRolle->bind_param("ii", $this->id, $rolle,);
+            $sqlInsertRolle->execute();
+            $sqlInsertRolle->close();
+        }
+        foreach ($this->aktiviteter as $aktivitet){
+    
+            $sqlInsertAktivitet = $con->prepare
+                ('INSERT INTO aktivitetspåmelding (mid, aid)
+                VALUES (?, ?)'
+            );
+            $sqlInsertAktivitet->bind_param( "ii", $this->id, $aktivitet);
+            $sqlInsertAktivitet->execute();
+            $sqlInsertAktivitet->close();
+        }
+        
+    }
+}
+
 
 
 ///////////         funk for å endre
 
 
-}
+
 
 
 ?>
