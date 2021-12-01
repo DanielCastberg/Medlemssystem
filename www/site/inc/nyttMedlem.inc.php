@@ -2,6 +2,21 @@
 require 'mysqli.inc.php';
 require '../lib/medlem.class.php';
 
+session_start();
+
+$brukerObj = unserialize($_SESSION['bruker']['medlem']);
+$brukerArr = $brukerObj->getArr();
+
+if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
+    ($_SESSION['bruker']['innlogget'] !== true)) {
+    header("Location: login.inc.php");
+    exit();
+}elseif (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
+    header("Location: forside.inc.php");
+    exit();
+}
+
+
 function settVerdi($i){
     if (isset($_POST[$i])) {echo $_POST[$i];} 
 }
@@ -26,13 +41,6 @@ if (isset($_POST['contact-send'])){
         foreach($feilmeldinger as $feilmelding){
             echo $feilmelding . "<br>";
         }
-        
-        
-        /*                                 //Utskrift av feilmeldinger
-        echo "<b>Venligst fyll inn alle feltene riktig:</b><br>";
-        for($i = 0; $i < count($feilmeldinger); $i++){
-            echo $feilmeldinger[$i] . '<br>';
-        }*/
     }
 }
 

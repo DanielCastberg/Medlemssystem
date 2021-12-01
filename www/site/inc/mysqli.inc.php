@@ -4,7 +4,7 @@ function dbConnect(){
 
     $user = 'root';
     $password = '';
-    $db = 'klubbdb';
+    $db = 'test_klubbdb';
 
     $db = new mysqli('localhost', $user, $password, $db) or die("Tilkobling misslykket");
   
