@@ -79,8 +79,6 @@ medlemSidenDato AS "Medlem siden", kontigentstatus AS "Kontigentstatus"
 FROM medlemmer ' . $join . ' ' .
 $where . ' ORDER by Kontigentstatus DESC, id; ';   
 
-echo $sql;
-
 $con = dbConnect();
 
 $result = mysqli_query($con, $sql);                          //Henter med spørring
