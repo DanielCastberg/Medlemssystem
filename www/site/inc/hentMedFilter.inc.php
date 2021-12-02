@@ -18,23 +18,23 @@ if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
 }
 
 $where = "";
+$join  = ""; 
 if(isset($_POST['contact-send'])){
 
     $where = "WHERE ";
-    $forrige = TRUE;
 
     switch($_POST['Kontigentstatus']){
         case 'ikkebetalt': $where .= "kontigentstatus = 0"; break;
         case 'betalt'    : $where .= "kontigentstatus = 1"; break;
-        default: $forrige = FALSE;
     }
 
-    if($forrige && !str_contains($_POST['rolle'], "alle")){
-        $where .= " AND ";
+    if(!str_contains($_POST['rolle'], "alle")){
+        $join  .= "JOIN rolleregister on rolleregister.mid = medlemmer.id ";
+        if(!str_contains($_POST['Kontigentstatus'], "alle")){
+            $where .= " AND ";
+        }
     }
-
-    $forrige = TRUE;
-
+    
     switch($_POST['rolle']){
         case 'Admin':  $where .= "rolleregister.rid = 1"; break;
         case 'Leder':  $where .= "rolleregister.rid = 2"; break;
@@ -42,10 +42,13 @@ if(isset($_POST['contact-send'])){
         default: $forrige = FALSE;
     }
 
-    if($forrige && !str_contains($_POST['interesse'], "alle")){
-        $where .= " AND ";
+    if(!str_contains($_POST['interesse'], "alle")){
+        $join  .= "JOIN interesseregister on interesseregister.mid = medlemmer.id ";
+        if(!str_contains($_POST['rolle'], "alle") || 
+        (!str_contains($_POST['Kontigentstatus'], "alle"))){
+            $where .= " AND ";
+        }
     }
-    $forrige = TRUE;
     
     switch($_POST['interesse']){
         case 'Fotball': $where .= "interesseregister.iid = 1"; break;
@@ -54,26 +57,29 @@ if(isset($_POST['contact-send'])){
         case 'Dans':    $where .= "interesseregister.iid = 4"; break;
         default: $forrige = FALSE;
     }
-    /*
-    if($forrige && !str_contains($_POST['interesse'], "alle")){
-        $where .= " AND ";
-        $forrige = TRUE;
-    }*/
 
-    if (strlen($where) < 7){$where = "";}
+    
+    if(!str_contains($_POST['aktivitet'], "alle")){
+        $join  .= "JOIN aktivitetspåmelding on aktivitetspåmelding.mid = medlemmer.id ";
+        if(!str_contains($_POST['rolle'], "alle") || !str_contains($_POST['interesse'], "alle") || 
+        (!str_contains($_POST['Kontigentstatus'], "alle"))){
+            $where .= " AND ";
+        }
+        $where .= "aktivitetspåmelding.aid = " . $_POST['aktivitet'];
+    }
+
+    if (strlen($where) < 7){$where = "";    //Tom streng dersom ingen filter sendes
+    }
 
 }
-
-
-
 
 $sql = 'SELECT DISTINCT id as ID, fornavn AS Navn, etternavn AS Etternavn, 
 tlf AS Telefonnummer, mail AS "E-post", fodselsdato AS Fødselsdato, 
 medlemSidenDato AS "Medlem siden", kontigentstatus AS "Kontigentstatus" 
-FROM medlemmer 
-JOIN rolleregister on rolleregister.mid = medlemmer.id  
-JOIN interesseregister on interesseregister.mid = medlemmer.id ' . 
+FROM medlemmer ' . $join . ' ' .
 $where . ' ORDER by Kontigentstatus DESC, id; ';   
+
+echo $sql;
 
 $con = dbConnect();
 
@@ -94,7 +100,6 @@ mysqli_close($con);                                          //Lukker DB-connect
         <p>
             <a href = "forside.inc.php">Tilbake til forsiden </a>
             <br>
-        
         <p>        
         <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
             <label for="Kontigentstatus">Kontigentstatus</label><br>
@@ -152,13 +157,51 @@ mysqli_close($con);                                          //Lukker DB-connect
                         str_contains($_POST["interesse"], "Biljard"))){
                             echo "selected";}?>>Biljard</option>
             </select>
+
+            <p>
+
+            <label for="aktivitet">Aktivitet</label><br>
+                <select name="aktivitet">       
+                    <option value="alle" 
+                    <?php if ((isset($_POST["interesse"]) && 
+                        str_contains($_POST["aktivitet"], "alle"))){
+                        echo " selected";
+                        }?>>Vis alle</option>
+
+
+                    <?php  
+                    $a_query = "SELECT id AS ID, navn AS Navn FROM aktiviteter";
+                    
+                    $con = dbConnect();
+                    $result = mysqli_query($con, $a_query);    
+                    $rader = mysqli_fetch_all($result, MYSQLI_ASSOC);   //Henter passord om 
+
+                    echo "<br><pre>";
+                    print_r($rader);
+                    echo "<br></pre>";
+                    
+                    foreach($rader as $rad){
+                        echo '<option value=' . $rad['ID'] . ' '; 
+                        if (isset($_POST["aktivitet"]) && 
+                            str_contains($_POST["aktivitet"], $rad['ID'])){
+                        echo "selected ";}
+                        echo '>' . $rad['Navn'] . '</option>';
+                    }
+
+                    mysqli_free_result($result);
+                    ?>
+                </select>
+
+                    
+                    
+            </select>
             
         
         <p>               <!––"send" knapp -->
             <button type="submit" name="contact-send">Filtrer</button>   
         </form>
         
-        
+
         <p>
             <br><b>Viser aktuelle medlemmer:</b>
         

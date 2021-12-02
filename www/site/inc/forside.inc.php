@@ -22,7 +22,7 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
     <body>
         <p>
             <a href = "hentAlle.inc.php">Vis alle medlemmer </a><br>
-            <a href = "hentMedfilter.inc.php">Finn medlemmer </a><br>   
+            <a href = "hentMedFilter.inc.php">Finn medlemmer </a><br>   
             
             <?php
                 if(in_array("admin", $arr['roller'])){
