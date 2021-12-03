@@ -1,4 +1,13 @@
 <?php
+
+session_start();
+
+if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
+($_SESSION['bruker']['innlogget'] !== true)) {
+header("Location: login.inc.php");
+exit();
+}
+
 require 'mysqli.inc.php';
 
 $sqlM = "SELECT medlemmer.id, medlemmer.fornavn, medlemmer.etternavn, 
@@ -33,10 +42,13 @@ mysqli_close($con);                                          //Lukker DB-connect
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Oppgave 5</title>
+        <title>Vis aktiviteter</title>
     </head>
 
     <body>
+        <p>
+            <a href = "forside.inc.php">Tilbake til forsiden </a>
+            <br>
         <p>
             <?php foreach ($aktiviteter as $aktivitet):?>
 

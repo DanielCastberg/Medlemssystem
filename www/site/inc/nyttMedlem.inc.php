@@ -51,7 +51,7 @@ if (isset($_POST['contact-send'])){
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Oppgave 2</title>
+        <title>Nytt medlem</title>
     </head>
 
     <body>
@@ -96,18 +96,35 @@ if (isset($_POST['contact-send'])){
             <label for="kjonn">Kjønn</label>
             <select name="kjonn">       
                 <option value="" disabled selected>Velg Kjønn</option>
-                <option value="1">Mann</option>
-                <option value="0">Kvinne</option>
+                <option value="1"<?php if ((isset($_POST["kjonn"]) && 
+                        $_POST["kjonn"] == 1)){
+                        echo "selected";}?>>Mann</option>
+                <option value="0"<?php if ((isset($_POST["kjonn"]) && 
+                        $_POST["kjonn"] == 0)){
+                        echo "selected";}?>>Kvinne</option>
             </select>
 
         <p>             <!––Sender valgte alternativer i array -->
             <label for="interesser[]">Interesser</label><br>
             <select multiple name="interesser[]">  
-                <option value="1">Fotball</option>
-                <option value="2">Dart</option>
-                <option value="3">Biljard</option>
-                <option value="4">Dans</option>
+
+                <option value="1" <?php if ((isset($_POST["interesser"]) && 
+                in_array(1, $_POST["interesser"]))){
+                echo "selected";}?>>Fotball</option>
+
+                <option value="2" <?php if ((isset($_POST["interesser"]) && 
+                in_array(2, $_POST["interesser"]))){
+                echo "selected";}?>>Dart</option>
+
+                <option value="3" <?php if ((isset($_POST["interesser"]) && 
+                in_array(3, $_POST["interesser"]))){
+                echo "selected";}?>>Biljard</option>
+
+                <option value="4" <?php if ((isset($_POST["interesser"]) && 
+                in_array(4, $_POST["interesser"]))){
+                echo "selected";}?>>Dans</option>
             </select>
+
         <p>
             <label for="aktiviteter[]">Kursaktiviteter</label><br>
             <select multiple name="aktiviteter[]" > 
@@ -118,11 +135,16 @@ if (isset($_POST['contact-send'])){
 
                 $result = mysqli_query($con, $query);           
                 $rader = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-                print_r($rader);
                 
                 foreach($rader as $index => $verdi){
-                    echo '<option value="' . $verdi['id'] . '">' . $verdi['navn'] . '</option>';
+                    echo '<option value=' . $verdi['id'] . " ";
+                    
+                    if ((isset($_POST["aktiviteter"]) && 
+                    in_array($verdi['id'], $_POST["aktiviteter"]))){
+                        echo "selected";
+                    }
+
+                    echo '>' . $verdi['navn'] . '</option>';
                 }
                 ?>
 
@@ -131,9 +153,18 @@ if (isset($_POST['contact-send'])){
 
             <label for="roller[]">Roller</label><br>
             <select multiple name="roller[]">
-                <option value="1">Admin</option>
-                <option value="2">Leder</option>
-                <option value="3">Medlem</option>
+
+                <option value="1" <?php if ((isset($_POST["roller"]) && 
+                in_array(1, $_POST["roller"]))){
+                echo "selected";}?>>Admin</option>
+
+                <option value="2" <?php if ((isset($_POST["roller"]) && 
+                in_array(2, $_POST["roller"]))){
+                echo "selected";}?>>Leder</option>
+
+                <option value="3" <?php if ((isset($_POST["roller"]) && 
+                in_array(3, $_POST["roller"]))){
+                echo "selected";}?>>Medlem</option>
             </select>
 
         <p>
@@ -144,10 +175,14 @@ if (isset($_POST['contact-send'])){
         <p>
         
             <label for="kontigentstatus">Kontigentstatus</label><br>
-            <select name="kontigentstatus">
-                <option value="" disabled selected>Velg Kontigentstatus</option>
-                <option value="1">Betalt</option>
-                <option value="0">Ikke betalt</option>
+            <select multiple name="kontigentstatus">
+                <option value="" disabled >Velg Kontigentstatus</option>
+                <option value="1" <?php if ((isset($_POST["kontigentstatus"]) &&                         
+                        ($_POST["kontigentstatus"] == 1))){
+                        echo "selected";}?>>Betalt</option>
+                <option value="0" <?php if ((isset($_POST["kontigentstatus"]) &&                         
+                        ($_POST["kontigentstatus"] == 0))){
+                        echo "selected";}?>>Ikke betalt</option>
             </select>
         
         <p>               <!––"send" knapp -->
