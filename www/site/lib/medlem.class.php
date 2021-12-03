@@ -46,7 +46,7 @@ class medlem{
                 case 'roller':          $this->roller = $v;             break;
                 case 'interesser':      $this->interesser = $v;         break;
                 case 'aktiviteter':     $this->aktiviteter = $v;        break;
-                case 'dato':            $this->dato = $v;               break;
+                case 'dato':            $this->fodselsdato = $v;        break;
                 case 'medlemSidenDato': $this->dato = $v;               break;
                 case 'kontigentstatus': $this->kontigentstatus = $v;    break;
             }

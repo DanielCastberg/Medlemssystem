@@ -1,5 +1,6 @@
 <?php
 require '../lib/medlem.class.php';
+
 session_start();
 
 if(!isset($_SESSION['bruker']['innlogget']) ||
@@ -21,8 +22,10 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
 
     <body>
         <p>
+            <a href = "visProfil.inc.php">Min profil </a><br><br>
             <a href = "hentAlle.inc.php">Vis alle medlemmer </a><br>
             <a href = "hentMedFilter.inc.php">Finn medlemmer </a><br>   
+             
             
             <?php
                 if(in_array("admin", $arr['roller'])){
