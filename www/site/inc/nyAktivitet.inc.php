@@ -29,10 +29,6 @@ if (isset($_POST['contact-send'])){
         $aktivitet = aktivitet::lagAktivitet($_POST);
         $aktivitet->sendTilDB();
 
-        echo "<pre>";
-        print_r($_POST);
-        echo "</pre>";
-
         foreach ($_POST as $k=>$v) {        //Sletter data i $_post
             unset($_POST[$k]);
         }

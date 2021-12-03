@@ -97,10 +97,10 @@ if (isset($_POST['contact-send'])){
             <select name="kjonn">       
                 <option value="" disabled selected>Velg Kjønn</option>
                 <option value="1"<?php if ((isset($_POST["kjonn"]) && 
-                        $_POST["kjonn"] == 1)){
+                        $_POST["kjonn"] == "1")){
                         echo "selected";}?>>Mann</option>
                 <option value="0"<?php if ((isset($_POST["kjonn"]) && 
-                        $_POST["kjonn"] == 0)){
+                        $_POST["kjonn"] == "0")){
                         echo "selected";}?>>Kvinne</option>
             </select>
 
@@ -178,10 +178,10 @@ if (isset($_POST['contact-send'])){
             <select multiple name="kontigentstatus">
                 <option value="" disabled >Velg Kontigentstatus</option>
                 <option value="1" <?php if ((isset($_POST["kontigentstatus"]) &&                         
-                        ($_POST["kontigentstatus"] == 1))){
+                        ($_POST["kontigentstatus"] == "1"))){
                         echo "selected";}?>>Betalt</option>
                 <option value="0" <?php if ((isset($_POST["kontigentstatus"]) &&                         
-                        ($_POST["kontigentstatus"] == 0))){
+                        ($_POST["kontigentstatus"] == "0"))){
                         echo "selected";}?>>Ikke betalt</option>
             </select>
         
