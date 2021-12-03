@@ -140,8 +140,6 @@ class medlem{
 
     public static function medlemFraDB($mail){
 
-        require_once '../inc/dbConnect.inc.php';
-
         $con = dbConnect();
 
         $m_query = "SELECT * FROM medlemmer WHERE
@@ -166,26 +164,34 @@ class medlem{
             WHERE medlemmer.mail ='" . $mail . "'";
 
 
-        $result = mysqli_query($con, $m_query);           
-        $m = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        $medlemArr = $m[0];                             //Arr med medlemsdata
+        $result = mysqli_query($con, $m_query);          
+        if(is_object($result)) {
+            $m = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            $medlemArr = $m[0];                             //Arr med medlemsdata
+        }
 
-        $result = mysqli_query($con, $r_query);           
-        $r = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        foreach($r as $verdi){
-        $medlemArr["roller"][] = $verdi['roller'];
+        $result = mysqli_query($con, $r_query);               
+        if(is_object($result)) {      
+            $r = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            foreach($r as $verdi){
+                $medlemArr["roller"][] = $verdi['roller'];
+            }
         }
         
-        $result = mysqli_query($con, $a_query);           
-        $a = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        foreach($a as $verdi){
-        $medlemArr["aktiviteter"][] = $verdi['aktiviteter'];
-        }   
+        $result = mysqli_query($con, $a_query);                   
+        if(is_object($result)) {  
+            $a = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            foreach($a as $verdi){
+                $medlemArr["aktiviteter"][] = $verdi['aktiviteter'];
+            }  
+        } 
         
-        $result = mysqli_query($con, $i_query);           
-        $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        foreach($i as $verdi){
-        $medlemArr["interesser"][] = $verdi['interesser'];
+        $result = mysqli_query($con, $i_query);   
+        if(is_object($result)) {       
+            $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            foreach($i as $verdi){
+                $medlemArr["interesser"][] = $verdi['interesser'];
+            }
         }
 
         $medlem = medlem::lagMedlem($medlemArr);
