@@ -26,6 +26,33 @@ class medlem{
     private $kontigentstatus;
 
 
+
+
+    private function setVerdier($arr){             //Lager objekt fra array
+
+        foreach($arr as $k => $v){
+
+            switch($k){
+                case 'id':              $this->id = $v;                 break;
+                case 'fornavn':         $this->fornavn = $v;            break;
+                case 'etternavn':       $this->etternavn = $v;          break;
+                case 'adresse':         $this->adresse = $v;            break;        
+                case 'postnummer':      $this->postnummer = $v;         break;
+                case 'poststed':        $this->poststed = $v;           break;
+                case 'tlf':             $this->tlf = $v;                break;
+                case 'mail':            $this->mail = $v;               break;
+                case 'fodselsdato':     $this->fodselsdato = $v;        break;
+                case 'kjonn':           $this->kjonn = $v;              break;
+                case 'roller':          $this->roller = $v;             break;
+                case 'interesser':      $this->interesser = $v;         break;
+                case 'aktiviteter':     $this->aktiviteter = $v;        break;
+                case 'dato':            $this->dato = $v;               break;
+                case 'medlemSidenDato': $this->dato = $v;               break;
+                case 'kontigentstatus': $this->kontigentstatus = $v;    break;
+            }
+        }
+    }    
+    
     public static function sjekkOmGyldig($arr){        //Henter array med evt feilmeldinger
     
         $messages = array();    //Lagrer feilmeldinger i array
@@ -65,43 +92,20 @@ class medlem{
         if (empty($arr['kjonn'])){   
             $messages[] = "Du må fylle inn kjønn";              
         }
-
+        if (empty($arr['interesser'])){   
+            $messages[] = "Du må fylle inn minst en interesse";  
+        }
         if (empty($arr['roller'])){   
             $messages[] = "Du må fylle inn minst en rolle";     
         }
         if (empty($arr['dato'])){   
-            $messages[] = "Du må fylle inn medlem siden dato";  
+            $messages[] = "Du må fylle inn 'medlem-siden' dato";  
         }
         if (empty($arr['kontigentstatus'])){  
             $messages[] = "Du må fylle inn kontigentstatus";    
         }
     
         return $messages;
-    }
-
-    public function setVerdier($arr){             //Lager objekt fra array
-
-        foreach($arr as $k => $v){
-
-            switch($k){
-                case 'id':              $this->id = $v;                 break;
-                case 'fornavn':         $this->fornavn = $v;            break;
-                case 'etternavn':       $this->etternavn = $v;          break;
-                case 'adresse':         $this->adresse = $v;            break;        
-                case 'postnummer':      $this->postnummer = $v;         break;
-                case 'poststed':        $this->poststed = $v;           break;
-                case 'tlf':             $this->tlf = $v;                break;
-                case 'mail':            $this->mail = $v;               break;
-                case 'fodselsdato':     $this->fodselsdato = $v;        break;
-                case 'kjonn':           $this->kjonn = $v;              break;
-                case 'roller':          $this->roller = $v;             break;
-                case 'interesser':      $this->interesser = $v;         break;
-                case 'aktiviteter':     $this->aktiviteter = $v;        break;
-                case 'dato':            $this->dato = $v;               break;
-                case 'medlemSidenDato': $this->dato = $v;               break;
-                case 'kontigentstatus': $this->kontigentstatus = $v;    break;
-            }
-        }
     }
 
     public function getArr(){                     //Henter Array med verdier
