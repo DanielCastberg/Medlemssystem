@@ -91,6 +91,7 @@ if (isset($_POST['contact-send'])){
             <input name="fodselsdato" type="date"   
                 value="<?php settVerdi("fodselsdato"); ?>">
 
+
                         <!––Bruker velger en av to verdier -->    
             <label for="kjonn">Kjønn</label>
             <select name="kjonn">       
@@ -100,15 +101,15 @@ if (isset($_POST['contact-send'])){
             </select>
 
         <p>             <!––Sender valgte alternativer i array -->
-            <label for="interesser[]">Interesser</label>
+            <label for="interesser[]">Interesser</label><br>
             <select multiple name="interesser[]">  
                 <option value="1">Fotball</option>
                 <option value="2">Dart</option>
                 <option value="3">Biljard</option>
                 <option value="4">Dans</option>
             </select>
-        
-            <label for="aktiviteter[]">Kursaktiviteter</label>
+        <p>
+            <label for="aktiviteter[]">Kursaktiviteter</label><br>
             <select multiple name="aktiviteter[]" > 
                 
                 <?php //Henter alternativer fra DB
@@ -126,8 +127,9 @@ if (isset($_POST['contact-send'])){
                 ?>
 
             </select>
+        <p>
 
-            <label for="roller[]">Roller</label>
+            <label for="roller[]">Roller</label><br>
             <select multiple name="roller[]">
                 <option value="1">Admin</option>
                 <option value="2">Leder</option>
@@ -135,11 +137,13 @@ if (isset($_POST['contact-send'])){
             </select>
 
         <p>
-            <label for="dato">Medlem-siden dato</label>
+            <label for="dato">Medlem-siden dato</label><br>
             <input name="dato" type="date"          
                 value="<?php settVerdi("dato"); ?>">
         
-            <label for="kontigentstatus">Kontigentstatus</label>
+        <p>
+        
+            <label for="kontigentstatus">Kontigentstatus</label><br>
             <select name="kontigentstatus">
                 <option value="" disabled selected>Velg Kontigentstatus</option>
                 <option value="1">Betalt</option>

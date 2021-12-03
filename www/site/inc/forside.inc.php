@@ -28,7 +28,8 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
                 if(in_array("admin", $arr['roller'])){
                     echo '<a href = "nyttMedlem.inc.php">Nytt medlem </a><br> 
                           <a href = "endreMedlem.inc.php">Endre Medlem </a><br>
-                          <a href = "nyAkticitet.inc.php">Legg til aktiviteter </a><br>';
+                          <a href = "aktivitetsPåmelding.inc.php">Vis aktiviteter og påmeldte</a><br>
+                          <a href = "nyAktivitet.inc.php">Legg til aktiviteter </a><br>';
                 }       
             ?>
         <p>
