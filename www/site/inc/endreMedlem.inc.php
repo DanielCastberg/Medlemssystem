@@ -17,49 +17,114 @@ if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
     exit();
 }
 
+if (!isset($_COOKIE['mail'])){                      //Sjekker om cookie er laget
+    header("Location: velgEndring.inc.php");
+    exit();
+}
+
+////////////////////////////////////////////////////////////////
 
 function hentVerdi($i){         //Sjekker om index fins
     if (isset($_POST[$i])) {echo $_POST[$i];} //Printer i forms
 }
 
-
+$medlemObj;                     //Deklarerer var utenfor løkke
 
 if (isset($_POST['contact-send'])) {
-                                    
-    if(gyldigEndring($_POST)){ 
+    $feilmeldinger = medlem::sjekkOmGyldig($_POST);
+    $endret = false;            //Er innhold endret?       
 
-        $endret = false;            //Er innhold endret?
+    if(empty($feilmeldinger)){ 
 
-        foreach($medlem as $k => $v){    
-            if ($medlem[$k] != $_POST[$k]){ $endret = true;}
-            $medlem[$k] = $_POST[$k];
+        $medlemObj = medlem::lagMedlem($_POST);
+        $medlemArr = $medlemObj->getArr();
+
+        echo "<pre>";
+        print_r($_POST); print_r($medlemArr);
+        echo "</pre>";
+
+        if ($medlemArr['interesser'] != $_POST['interesser']){
+            unset($medlemArr['interesser']);
+            $medlemArr['interesser'] = $_POST['interesser'];
+            $endret = TRUE;
+        }
+
+        if ($medlemArr['roller'] != $_POST['roller']){
+            unset($medlemArr['roller']);
+            $medlemArr['roller'] = $_POST['roller'];
+            $endret = TRUE;
+        }
+
+        if ($medlemArr['aktiviteter'] != $_POST['aktiviteter']){
+            unset($medlemArr['aktiviteter']);
+            $medlemArr['aktiviteter'] = $_POST['aktiviteter'];
+            $endret = TRUE;
+        }
+
+
+        foreach($medlemArr as $k => $v){    
+            if (($k != "id") /*&& ($k != "interesser") && 
+            ($k != "roller") && ($k != "aktiviteter")*/){
+                if ($medlemArr[$k] != $_POST[$k]){ 
+                    $endret = true;
+                }
+                $medlemArr[$k] = $_POST[$k];
+            }            
+        }
+
+        
+        echo "<pre>";
+        print_r($_POST); print_r($medlemArr);
+        echo "</pre>";
+
+
+
+        /*
+        foreach($medlemArr['interesser'] as $interesse){
+            if (in_array($interesse[$k], $_POST['interesser'])){ 
+
+                //$endret = true;
+            }
+            $medlemArr[$k] = $_POST[$k];
+        }*/
+
+        $medlemObj = medlem::lagMedlem($medlemArr);
+        
+        if($endret){
+            //$medlemObj->sendTilDB();
         }
         
-
-        if($endret){                //Tilbakemelding om endret
-            echo ("<br>Medlemmet er endret!<br>");
+    }
+    else {
+        foreach($feilmeldinger as $feilmelding){
+            echo "<br>" . $feilmelding;
         }
-        else{
+    }   
+
+    if($endret){                //Tilbakemelding om endret
+        echo ("<br>Medlemmet er endret!<br>");
+        //$_POST = medlem::medlemFraDB($mail);
+    }
+    else{
         echo "<br>Medlemmet er ikke endret!<br>";
-        }        
+        $_POST = $medlemObj->getArr();
     }        
+
 }
-else{
+else{   //Sendes til form
 
-    $obj = medlem::medlemFraDB($_COOKIE['mail']);
+    $medlemObj = medlem::medlemFraDB($_COOKIE['mail']);
+    $_POST = $medlemObj->getArr();
 
-    $_POST = $obj->getArr();
-
-    setcookie('mail', $_POST['mail'], -21600);
-
-    echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";
-}             //Sendes til form
+    //Fjerner cookie
+    //setcookie('mail', $_POST['mail'], time() - 21600);
 
 
-
+}             
 ?>
+
+
+
 
 
 
@@ -127,19 +192,19 @@ else{
             <select multiple name="interesser[]">  
 
                 <option value="1" <?php if ((isset($_POST["interesser"]) && 
-                in_array(1, $_POST["interesser"]))){
+                in_array("Fotball", $_POST["interesser"]))){
                 echo "selected";}?>>Fotball</option>
 
                 <option value="2" <?php if ((isset($_POST["interesser"]) && 
-                in_array(2, $_POST["interesser"]))){
+                in_array("Dart", $_POST["interesser"]))){
                 echo "selected";}?>>Dart</option>
 
                 <option value="3" <?php if ((isset($_POST["interesser"]) && 
-                in_array(3, $_POST["interesser"]))){
+                in_array("Biljard", $_POST["interesser"]))){
                 echo "selected";}?>>Biljard</option>
 
                 <option value="4" <?php if ((isset($_POST["interesser"]) && 
-                in_array(4, $_POST["interesser"]))){
+                in_array("Dans", $_POST["interesser"]))){
                 echo "selected";}?>>Dans</option>
             </select>
 
@@ -158,14 +223,15 @@ else{
                 mysqli_close($con);  
                 
                 foreach($rader as $index => $verdi){
-                    echo '<option value=' . $verdi['id'] . " ";
+                    echo '<option value=' . $verdi['id'] . ' ';
                     
                     if ((isset($_POST["aktiviteter"]) && 
-                    in_array($verdi['id'], $_POST["aktiviteter"]))){
+                    in_array($verdi['navn'], $_POST["aktiviteter"]))){
                         echo "selected";
                     }
 
                     echo '>' . $verdi['navn'] . '</option>';
+                
                 }
                 ?>
 
@@ -176,15 +242,15 @@ else{
             <select multiple name="roller[]">
 
                 <option value="1" <?php if ((isset($_POST["roller"]) && 
-                in_array(1, $_POST["roller"]))){
+                in_array("admin", $_POST["roller"]))){
                 echo "selected";}?>>Admin</option>
 
                 <option value="2" <?php if ((isset($_POST["roller"]) && 
-                in_array(2, $_POST["roller"]))){
+                in_array("leder", $_POST["roller"]))){
                 echo "selected";}?>>Leder</option>
 
                 <option value="3" <?php if ((isset($_POST["roller"]) && 
-                in_array(3, $_POST["roller"]))){
+                in_array("medlem", $_POST["roller"]))){
                 echo "selected";}?>>Medlem</option>
             </select>
 
