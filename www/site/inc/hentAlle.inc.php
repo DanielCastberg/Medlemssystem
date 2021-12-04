@@ -18,8 +18,12 @@ ORDER by kontigentstatus DESC, id; ';   //Definerer spørring
 $con = dbConnect();
 
 $result = mysqli_query($con, $sql);                          //Henter med spørring
-$medlemmer = mysqli_fetch_all($result, MYSQLI_ASSOC);
-mysqli_free_result($result);                                 //frigir minne
+if (is_object($result)){
+    $medlemmer = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    mysqli_free_result($result);    //frigir minne
+}
+    
+                                 
 
 mysqli_close($con);                                          //Lukker DB-connection
 
