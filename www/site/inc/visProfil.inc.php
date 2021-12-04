@@ -14,8 +14,6 @@ $brukerArr = $brukerObj->getArr();
 
 $con = dbConnect();                             //Mysqli
 
-
-
 if (isset($_POST['contact-send'])){             //Bildet er sendt
 
     $filNavn = $_FILES["profilbilde"]['name'];

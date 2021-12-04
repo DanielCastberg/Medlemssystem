@@ -11,8 +11,9 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
 
  $obj = unserialize($_SESSION['bruker']['medlem']);
  $arr = $obj->getArr(); 
-
 ?>
+
+
 
 
 <html>

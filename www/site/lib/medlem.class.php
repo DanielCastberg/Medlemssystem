@@ -44,7 +44,8 @@ class medlem{
                 case 'roller':          $this->roller = $v;             break;
                 case 'interesser':      $this->interesser = $v;         break;
                 case 'aktiviteter':     $this->aktiviteter = $v;        break;
-                case 'dato':            $this->fodselsdato = $v;        break;
+                case 'fodselsdato':     $this->fodselsdato = $v;        break;
+                case 'dato':            $this->dato = $v;               break;
                 case 'medlemSidenDato': $this->dato = $v;               break;
                 case 'kontigentstatus': $this->kontigentstatus = $v;    break;
             }
@@ -87,7 +88,7 @@ class medlem{
         if (empty($arr['fodselsdato'])){   
             $messages[] = "Du må fylle inn fødselsdato";        
         }
-        if (empty($arr['kjonn'])){   
+        if (!isset($arr['kjonn'])){   
             $messages[] = "Du må fylle inn kjønn";              
         }
         if (empty($arr['interesser'])){   
@@ -99,7 +100,7 @@ class medlem{
         if (empty($arr['dato'])){   
             $messages[] = "Du må fylle inn 'medlem-siden' dato";  
         }
-        if (empty($arr['kontigentstatus'])){  
+        if (!isset($arr['kontigentstatus'])){  
             $messages[] = "Du må fylle inn kontigentstatus";    
         }
     
@@ -142,19 +143,19 @@ class medlem{
         $m_query = "SELECT * FROM medlemmer WHERE
             medlemmer.mail='" . $mail . "'";
 
-        $r_query = "SELECT id, roller.navn AS roller
+        $r_query = "SELECT roller.id, roller.navn AS roller
             FROM medlemmer
             JOIN rolleregister on medlemmer.id = rolleregister.mid
             JOIN roller on rolleregister.rid = roller.id
             WHERE medlemmer.mail ='" . $mail . "'";
 
-        $a_query = "SELECT id, aktiviteter.navn AS aktiviteter
+        $a_query = "SELECT aktiviteter.id, aktiviteter.navn AS aktiviteter
             FROM medlemmer
             JOIN aktivitetspåmelding on medlemmer.id = aktivitetspåmelding.mid
             JOIN aktiviteter on aktivitetspåmelding.aid = aktiviteter.id
             WHERE medlemmer.mail ='" . $mail . "'";
 
-        $i_query = "SELECT id, interesser.navn AS interesser
+        $i_query = "SELECT interesser.id, interesser.navn AS interesser
             FROM medlemmer
             JOIN interesseregister on medlemmer.id = interesseregister.mid
             JOIN interesser on interesseregister.iid = interesser.id
@@ -165,31 +166,38 @@ class medlem{
         if(is_object($result)) {
             $m = mysqli_fetch_all($result, MYSQLI_ASSOC);
             $medlemArr = $m[0];                             //Arr med medlemsdata
+            mysqli_free_result($result);
         }
+        
 
         $result = mysqli_query($con, $r_query);               
         if(is_object($result)) {      
             $r = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($r as $verdi){
-                $medlemArr["roller"] += [$verdi['id'] => $verdi['roller']];
+                $medlemArr["roller"][] = $verdi['roller'];
             }
+            mysqli_free_result($result);
         }
+        
         
         $result = mysqli_query($con, $a_query);                   
         if(is_object($result)) {  
             $a = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($a as $verdi){
-                $medlemArr["aktiviteter"] += [$verdi['id'] => $verdi['aktiviteter']];
+                $medlemArr["aktiviteter"][] = $verdi['aktiviteter'];
             }  
+            mysqli_free_result($result);
         } 
         
         $result = mysqli_query($con, $i_query);   
         if(is_object($result)) {       
             $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($i as $verdi){
-                $medlemArr["interesser"] += [$verdi['id'] => $verdi['interesser']];
+                $medlemArr["interesser"][] = $verdi['interesser'];
             }
+            mysqli_free_result($result);
         }
+        
 
         $medlem = medlem::lagMedlem($medlemArr);
         return $medlem;
@@ -208,6 +216,7 @@ class medlem{
         $this->fodselsdato, $this->kjonn, $this->dato, $this->kontigentstatus);
 
         $m_query->execute();
+        $m_query->close();
 
         $i_query = "SELECT id FROM medlemmer WHERE     
         mail = '" . $this->mail . "';";
@@ -215,7 +224,7 @@ class medlem{
         $result = mysqli_query($con, $i_query);     //Henter id fra DB
         $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
         mysqli_free_result($result);                //Frigir minne
-        $this->id = $i[0]["id"];                          //Legger id i variabel
+        $this->id = $i[0]["id"];                    //Legger id i variabel
 
         foreach ($this->interesser as $interesse){
 

@@ -22,12 +22,17 @@ function settVerdi($i){
     if (isset($_POST[$i])) {echo $_POST[$i];} 
 }
 
-
 if (isset($_POST['contact-send'])){
     $feilmeldinger = medlem::sjekkOmGyldig($_POST);
 
     if(empty($feilmeldinger)){
         $medlem = medlem::lagMedlem($_POST);
+
+        
+        echo "<pre>";
+        print_r($medlem->getArr());
+        echo "<pre>";
+
         $medlem->sendTilDB();
 
         foreach ($_POST as $k=>$v) {        //Sletter data i $_post
@@ -181,7 +186,7 @@ if (isset($_POST['contact-send'])){
         <p>
         
             <label for="kontigentstatus">Kontigentstatus</label><br>
-            <select multiple name="kontigentstatus">
+            <select name="kontigentstatus">
                 <option value="" disabled >Velg Kontigentstatus</option>
                 <option value="1" <?php if ((isset($_POST["kontigentstatus"]) &&                         
                         ($_POST["kontigentstatus"] == "1"))){
