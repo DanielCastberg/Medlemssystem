@@ -1,12 +1,12 @@
 <?php
+require 'mysqli.inc.php';
+
 session_start();
 if(!isset($_SESSION['bruker']['innlogget']) ||
     $_SESSION['bruker']['innlogget'] !== true) {
     header("Location: login.inc.php");
     exit();
 }
-
-require 'mysqli.inc.php';
 
 $sql = 'SELECT id as ID, fornavn AS Navn, etternavn AS Etternavn, 
 tlf AS Telefonnummer, mail AS "E-post", fodselsdato AS Fødselsdato, 

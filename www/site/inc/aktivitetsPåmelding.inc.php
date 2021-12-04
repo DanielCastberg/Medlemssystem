@@ -1,4 +1,5 @@
 <?php
+require 'mysqli.inc.php';
 
 session_start();
 
@@ -7,8 +8,6 @@ if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
 header("Location: login.inc.php");
 exit();
 }
-
-require 'mysqli.inc.php';
 
 $sqlM = "SELECT medlemmer.id, medlemmer.fornavn, medlemmer.etternavn, 
 aktivitetspåmelding.aid, aktiviteter.navn, aktiviteter.dato

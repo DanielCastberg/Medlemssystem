@@ -10,7 +10,7 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
 }
 
  $obj = unserialize($_SESSION['bruker']['medlem']);
- $arr = $obj->getArr();
+ $arr = $obj->getArr(); 
 
 ?>
 
@@ -22,15 +22,15 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
 
     <body>
         <p>
-            <a href = "visProfil.inc.php">Min profil </a><br><br>
-            <a href = "hentAlle.inc.php">Vis alle medlemmer </a><br>
-            <a href = "hentMedFilter.inc.php">Finn medlemmer </a><br>   
+            <a href = "visProfil.inc.php">Min profil            </a><br><br>
+            <a href = "hentAlle.inc.php">Vis alle medlemmer     </a><br>
+            <a href = "hentMedFilter.inc.php">Filtrer medlemmer </a><br><br>   
              
             
             <?php
                 if(in_array("admin", $arr['roller'])){
                     echo '<a href = "nyttMedlem.inc.php">Nytt medlem </a><br> 
-                          <a href = "endreMedlem.inc.php">Endre Medlem </a><br>
+                          <a href = "velgEndring.inc.php">Endre Medlem </a><br><br>
                           <a href = "aktivitetsPåmelding.inc.php">Vis aktiviteter og påmeldte</a><br>
                           <a href = "nyAktivitet.inc.php">Legg til aktiviteter </a><br>';
                 }       

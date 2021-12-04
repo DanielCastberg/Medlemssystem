@@ -55,10 +55,13 @@ if (isset($_POST['contact-send'])){
     </head>
 
     <body>
-        <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <p>
             <a href = "forside.inc.php">Tilbake til forsiden </a>
             <br>
+        </p>
+        
+        <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+        
         <p>             <!––Input sendes med $_POST -->
             <label for="fornavn">Fornavn</label>
             <input name="fornavn" type="text"       
@@ -135,6 +138,9 @@ if (isset($_POST['contact-send'])){
 
                 $result = mysqli_query($con, $query);           
                 $rader = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                mysqli_free_result($result);                                 //frigir minne
+                mysqli_close($con);  
                 
                 foreach($rader as $index => $verdi){
                     echo '<option value=' . $verdi['id'] . " ";
