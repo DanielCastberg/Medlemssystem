@@ -13,7 +13,6 @@ class medlem{
     private $adresse;
 
     private $postnummer;
-    private $poststed;
     private $tlf;
     private $mail;
     private $fodselsdato;
@@ -38,7 +37,6 @@ class medlem{
                 case 'etternavn':       $this->etternavn = $v;          break;
                 case 'adresse':         $this->adresse = $v;            break;        
                 case 'postnummer':      $this->postnummer = $v;         break;
-                case 'poststed':        $this->poststed = $v;           break;
                 case 'tlf':             $this->tlf = $v;                break;
                 case 'mail':            $this->mail = $v;               break;
                 case 'fodselsdato':     $this->fodselsdato = $v;        break;
@@ -116,7 +114,6 @@ class medlem{
             'etternavn'         => $this->etternavn,
             'adresse'           => $this->adresse,
             'postnummer'        => $this->postnummer,
-            'poststed'          => $this->poststed,
             'tlf'               => $this->tlf,
             'mail'              => $this->mail,
             'fodselsdato'       => $this->fodselsdato,
@@ -145,19 +142,19 @@ class medlem{
         $m_query = "SELECT * FROM medlemmer WHERE
             medlemmer.mail='" . $mail . "'";
 
-        $r_query = "SELECT roller.navn AS roller
+        $r_query = "SELECT id, roller.navn AS roller
             FROM medlemmer
             JOIN rolleregister on medlemmer.id = rolleregister.mid
             JOIN roller on rolleregister.rid = roller.id
             WHERE medlemmer.mail ='" . $mail . "'";
 
-        $a_query = "SELECT aktiviteter.navn AS aktiviteter
+        $a_query = "SELECT id, aktiviteter.navn AS aktiviteter
             FROM medlemmer
             JOIN aktivitetspåmelding on medlemmer.id = aktivitetspåmelding.mid
             JOIN aktiviteter on aktivitetspåmelding.aid = aktiviteter.id
             WHERE medlemmer.mail ='" . $mail . "'";
 
-        $i_query = "SELECT interesser.navn AS interesser
+        $i_query = "SELECT id, interesser.navn AS interesser
             FROM medlemmer
             JOIN interesseregister on medlemmer.id = interesseregister.mid
             JOIN interesser on interesseregister.iid = interesser.id
@@ -174,7 +171,7 @@ class medlem{
         if(is_object($result)) {      
             $r = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($r as $verdi){
-                $medlemArr["roller"][] = $verdi['roller'];
+                $medlemArr["roller"] += [$verdi['id'] => $verdi['roller']];
             }
         }
         
@@ -182,7 +179,7 @@ class medlem{
         if(is_object($result)) {  
             $a = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($a as $verdi){
-                $medlemArr["aktiviteter"][] = $verdi['aktiviteter'];
+                $medlemArr["aktiviteter"] += [$verdi['id'] => $verdi['aktiviteter']];
             }  
         } 
         
@@ -190,7 +187,7 @@ class medlem{
         if(is_object($result)) {       
             $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($i as $verdi){
-                $medlemArr["interesser"][] = $verdi['interesser'];
+                $medlemArr["interesser"] += [$verdi['id'] => $verdi['interesser']];
             }
         }
 
@@ -253,7 +250,7 @@ class medlem{
         
     }
 }
-
+ 
 
 
 ///////////         funk for å endre

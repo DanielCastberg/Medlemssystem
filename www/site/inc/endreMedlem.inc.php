@@ -51,6 +51,10 @@ else{
     $_POST = $obj->getArr();
 
     setcookie('mail', $_POST['mail'], -21600);
+
+    echo "<pre>";
+    print_r($_POST);
+    echo "</pre>";
 }             //Sendes til form
 
 
@@ -201,6 +205,8 @@ else{
                         ($_POST["kontigentstatus"] == "0"))){
                         echo "selected";}?>>Ikke betalt</option>
             </select><br>
+
+        <p>
 
                         <!––"send" knapp -->
                 <button type="submit" name="contact-send">Send endringer</button> 
