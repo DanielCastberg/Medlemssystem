@@ -31,7 +31,6 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-print_r($medlemmer);
 
 ?>
 
