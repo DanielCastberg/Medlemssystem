@@ -28,70 +28,60 @@ function hentVerdi($i){         //Sjekker om index fins
     if (isset($_POST[$i])) {echo $_POST[$i];} //Printer i forms
 }
 
-$medlemObj;                     //Deklarerer var utenfor løkke
+$medlemObj;
+
+if (isset($_COOKIE['mail'])){
+    $medlemObj = medlem::medlemFraDB($_COOKIE['mail']);
+    $medlemObj->verdiTilID();
+}       //Inneholder array før endring
+
 
 if (isset($_POST['contact-send'])) {
     $feilmeldinger = medlem::sjekkOmGyldig($_POST);
-    $endret = false;            //Er innhold endret?       
+    $endringer = array();            //Er innhold endret?       
 
     if(empty($feilmeldinger)){ 
 
-        $medlemObj = medlem::lagMedlem($_POST);
         $medlemArr = $medlemObj->getArr();
+        
+        $arr = array("interesser", "aktiviteter", "roller");
+        
+        foreach($arr as $kategori){
+            if (!empty($medlemArr[$kategori]) && isset($_POST[$kategori])){
+                sort($_POST[$kategori]); sort($medlemArr[$kategori]);
 
-        echo "<pre>";
-        print_r($_POST); print_r($medlemArr);
-        echo "</pre>";
+                if((array_count_values($_POST[$kategori]) != 
+                   (array_count_values($_POST[$kategori])))){
+                        $endringer[] = $kategori;
+                    
+                }elseif (!empty(array_diff_assoc($medlemArr[$kategori], $_POST[$kategori]))){
+                    $endringer[] = $kategori;
+                }
 
-        if ($medlemArr['interesser'] != $_POST['interesser']){
-            unset($medlemArr['interesser']);
-            $medlemArr['interesser'] = $_POST['interesser'];
-            $endret = TRUE;
-        }
-
-        if ($medlemArr['roller'] != $_POST['roller']){
-            unset($medlemArr['roller']);
-            $medlemArr['roller'] = $_POST['roller'];
-            $endret = TRUE;
-        }
-
-        if ($medlemArr['aktiviteter'] != $_POST['aktiviteter']){
-            unset($medlemArr['aktiviteter']);
-            $medlemArr['aktiviteter'] = $_POST['aktiviteter'];
-            $endret = TRUE;
+            }elseif(!empty($medlemArr[$kategori]) xor isset($_POST[$kategori])){
+                $endringer[] = $kategori;
+            }
+            
         }
 
 
         foreach($medlemArr as $k => $v){    
-            if (($k != "id") /*&& ($k != "interesser") && 
-            ($k != "roller") && ($k != "aktiviteter")*/){
+            if (($k != "id") && ($k != "interesser") && 
+            ($k != "roller") && ($k != "aktiviteter")){
                 if ($medlemArr[$k] != $_POST[$k]){ 
-                    $endret = true;
-                }
-                $medlemArr[$k] = $_POST[$k];
-            }            
-        }
-
-        
-        echo "<pre>";
-        print_r($_POST); print_r($medlemArr);
-        echo "</pre>";
-
-
-
-        /*
-        foreach($medlemArr['interesser'] as $interesse){
-            if (in_array($interesse[$k], $_POST['interesser'])){ 
-
-                //$endret = true;
+                    $endringer[] = $k;
+                }   
             }
-            $medlemArr[$k] = $_POST[$k];
-        }*/
+        }            
 
-        $medlemObj = medlem::lagMedlem($medlemArr);
+        $_POST['id'] = $medlemArr['id'];
+        $medlemObj = medlem::lagMedlem($_POST);
+        $medlemObj->verdiTilID();
         
-        if($endret){
-            //$medlemObj->sendTilDB();
+        if(!empty($endringer)){
+
+            $medlemObj->endreDB($endringer);
+            print_r($_POST);
         }
         
     }
@@ -101,19 +91,17 @@ if (isset($_POST['contact-send'])) {
         }
     }   
 
-    if($endret){                //Tilbakemelding om endret
+    if((!empty($endringer)) && (empty($feilmeldinger))){                //Tilbakemelding om endret
         echo ("<br>Medlemmet er endret!<br>");
-        //$_POST = medlem::medlemFraDB($mail);
     }
     else{
         echo "<br>Medlemmet er ikke endret!<br>";
-        $_POST = $medlemObj->getArr();
+        
     }        
-
+    $_POST = $medlemObj->getArr();
 }
 else{   //Sendes til form
 
-    $medlemObj = medlem::medlemFraDB($_COOKIE['mail']);
     $_POST = $medlemObj->getArr();
 
     //Fjerner cookie
@@ -192,19 +180,19 @@ else{   //Sendes til form
             <select multiple name="interesser[]">  
 
                 <option value="1" <?php if ((isset($_POST["interesser"]) && 
-                in_array("Fotball", $_POST["interesser"]))){
+                in_array("1", $_POST["interesser"]))){
                 echo "selected";}?>>Fotball</option>
 
                 <option value="2" <?php if ((isset($_POST["interesser"]) && 
-                in_array("Dart", $_POST["interesser"]))){
+                in_array("2", $_POST["interesser"]))){
                 echo "selected";}?>>Dart</option>
 
                 <option value="3" <?php if ((isset($_POST["interesser"]) && 
-                in_array("Biljard", $_POST["interesser"]))){
+                in_array("3", $_POST["interesser"]))){
                 echo "selected";}?>>Biljard</option>
 
                 <option value="4" <?php if ((isset($_POST["interesser"]) && 
-                in_array("Dans", $_POST["interesser"]))){
+                in_array("4", $_POST["interesser"]))){
                 echo "selected";}?>>Dans</option>
             </select>
 
@@ -226,7 +214,7 @@ else{   //Sendes til form
                     echo '<option value=' . $verdi['id'] . ' ';
                     
                     if ((isset($_POST["aktiviteter"]) && 
-                    in_array($verdi['navn'], $_POST["aktiviteter"]))){
+                    in_array($verdi['id'], $_POST["aktiviteter"]))){
                         echo "selected";
                     }
 
@@ -242,15 +230,15 @@ else{   //Sendes til form
             <select multiple name="roller[]">
 
                 <option value="1" <?php if ((isset($_POST["roller"]) && 
-                in_array("admin", $_POST["roller"]))){
+                in_array("1", $_POST["roller"]))){
                 echo "selected";}?>>Admin</option>
 
                 <option value="2" <?php if ((isset($_POST["roller"]) && 
-                in_array("leder", $_POST["roller"]))){
+                in_array("2", $_POST["roller"]))){
                 echo "selected";}?>>Leder</option>
 
                 <option value="3" <?php if ((isset($_POST["roller"]) && 
-                in_array("medlem", $_POST["roller"]))){
+                in_array("3", $_POST["roller"]))){
                 echo "selected";}?>>Medlem</option>
             </select>
 

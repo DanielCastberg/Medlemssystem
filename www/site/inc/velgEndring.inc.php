@@ -24,9 +24,6 @@ if (isset($_POST['contact-send']) && isset($_POST['medlem'])){
     setcookie('mail', $_POST['medlem'], time() + 21600);
     
     header("Location: endreMedlem.inc.php");
-    echo "<pre>";
-    print_r($_COOKIE);
-    echo "<pre>";
     exit();
 }
 

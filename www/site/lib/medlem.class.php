@@ -198,7 +198,7 @@ class medlem{
             mysqli_free_result($result);
         }
         
-
+        $con->close();
         $medlem = medlem::lagMedlem($medlemArr);
         return $medlem;
     }
@@ -256,13 +256,159 @@ class medlem{
             $sqlInsertAktivitet->execute();
             $sqlInsertAktivitet->close();
         }
+        $con->close();
         
     }
+
+    public function verdiTilID(){
+        foreach ($this->interesser as $index => $interesse){
+            switch($interesse){
+                case "Fotball": 
+                    unset($this->interesser[$index]); 
+                    $this->interesser[] = 1; break;
+                case "Dart":
+                    unset($this->interesser[$index]); 
+                    $this->interesser[] = 2; break;
+                case "Biljard":
+                    unset($this->interesser[$index]); 
+                    $this->interesser[] = 3; break;
+                case "Dans":    
+                    unset($this->interesser[$index]); 
+                    $this->interesser[] = 4; break;
+            }
+        }sort($this->interesser);
+
+        foreach ($this->roller as $index => $rolle){
+            switch($rolle){
+                case "admin": 
+                    unset($this->roller[$index]); 
+                    $this->roller[] = 1; break;
+                case "leder":
+                    unset($this->roller[$index]); 
+                    $this->roller[] = 2; break;
+                case "medlem":
+                    unset($this->roller[$index]); 
+                    $this->roller[] = 3; break;
+            }
+        }sort($this->roller);
+
+        //Henter aktiviteter fra DB
+        $con = dbConnect();
+        $query = "SELECT id, navn FROM aktiviteter";
+
+        $result = mysqli_query($con, $query);           
+        $rader = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        mysqli_free_result($result);                                 //frigir minne
+        mysqli_close($con);  
+
+        foreach ($rader as $rad){
+            if (in_array($rad['navn'], $this->aktiviteter)){
+                unset($this->aktiviteter[array_search($rad['navn'], 
+                    $this->aktiviteter)]);
+                $this->aktiviteter[] = $rad['id'];
+            }
+        }sort($this->aktiviteter);
+
+    }
+
+    public function endreDB($endringer){
+
+        $con = dbConnect();
+
+        $query = $con->prepare('UPDATE medlemmer
+        SET fornavn = ?, etternavn = ?, adresse = ?, 
+        postnummer = ?, tlf = ?, mail = ?, fodselsdato = ?, 
+        kjonn = ?, medlemSidenDato = ?, kontigentstatus = ?
+        WHERE id = ?');
+
+        $query->bind_param('sssiissisii', $this->fornavn, $this->etternavn, 
+        $this->adresse, $this->postnummer, $this->tlf, $this->mail, $this->fodselsdato, 
+        $this->kjonn, $this->dato, $this->kontigentstatus, $this->id);
+
+        $query->execute();
+        $query->close();
+
+        $deleteQuery = "";
+        $deleteTeller = 0;
+        if (in_array('roller', $endringer)){
+            $deleteQuery .= 'DELETE FROM rolleregister WHERE mid=?; ';
+            $deleteTeller++;
+        }
+        if (in_array('interesser', $endringer)){
+            $deleteQuery .= 'DELETE FROM interesseregister WHERE mid=?; ';
+            $deleteTeller++;
+        }
+        if (in_array('aktiviteter', $endringer)){
+            $deleteQuery .= 'DELETE FROM aktivitetspåmelding WHERE mid=?; ';
+            $deleteTeller++;
+        }       
+
+        if($deleteTeller){
+            $delete = $con->prepare($deleteQuery);
+            
+            switch($deleteTeller){
+                case 1: 
+                    $delete->bind_param( 'i', 
+                    $this->id); break;
+                case 2: 
+                    $delete->bind_param( 'ii', 
+                    $this->id, $this->id); break;
+                case 3: 
+                    $delete->bind_param( 'iii', 
+                    $this->id, $this->id, $this->id); break;
+                    break;
+            }
+
+            $delete->execute();
+            $delete->close();
+        }
+
+
+        if (in_array('roller', $endringer)){
+
+            foreach ($this->roller as $rolle){
+                $query = "INSERT INTO rolleregister (mid, rid)
+                VALUES (?, ?);";
+
+                $stmt = $con->prepare($query);
+                $stmt->bind_param('ii', $this->id, $rolle);
+                $stmt->execute();
+                $stmt->close();
+            }                
+        }
+        
+        if (in_array('interesser', $endringer)){
+
+            foreach ($this->interesser as $interesse){
+                $query = "INSERT INTO interesseregister (mid, iid)
+                VALUES (?, ?);";
+
+                $stmt = $con->prepare($query);
+                $stmt->bind_param('ii', $this->id, $interesse);
+                $stmt->execute();
+                $stmt->close();
+            }                
+        }
+        
+
+        if (in_array('aktiviteter', $endringer)){
+
+            foreach ($this->aktiviteter as $aktivitet){
+                $query = "INSERT INTO aktivitetspåmelding (mid, aid)
+                VALUES (?, ?);";
+
+                $stmt = $con->prepare($query);
+                $stmt->bind_param('ii', $this->id, $aktivitet);
+                $stmt->execute();
+                $stmt->close();
+            }                
+        }
+        $con->close();
+
+    }
+    
 }
- 
-
-
-///////////         funk for å endre
 
 
 

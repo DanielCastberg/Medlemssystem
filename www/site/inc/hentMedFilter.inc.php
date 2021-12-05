@@ -154,6 +154,9 @@ mysqli_close($con);                                          //Lukker DB-connect
                     <option value="Biljard"  <?php if ((isset($_POST["interesse"]) && 
                         str_contains($_POST["interesse"], "Biljard"))){
                             echo "selected";}?>>Biljard</option>
+                    <option value="Dans"  <?php if ((isset($_POST["interesse"]) && 
+                        str_contains($_POST["interesse"], "Dans"))){
+                            echo "selected";}?>>Dans</option>
             </select>
 
             <p>

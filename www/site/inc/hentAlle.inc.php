@@ -8,28 +8,18 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
     exit();
 }
 
-$sql = 'SELECT id as ID, fornavn AS Navn, etternavn AS Etternavn, 
+$sql = 'SELECT id AS ID, fornavn AS Navn, etternavn AS Etternavn, 
 tlf AS Telefonnummer, mail AS "E-post", fodselsdato AS Fødselsdato, 
 medlemSidenDato AS "Medlem siden", kontigentstatus AS "Status" 
 FROM medlemmer 
-ORDER BY kontigentstatus DESC, id';   //Definerer spørring
+ORDER BY kontigentstatus DESC, id';       //Definerer spørring
                          
 
 $con = dbConnect();
-
-/*
-$result = mysqli_query($con, $sql);                          //Henter med spørring
+$result = mysqli_query($con, $sql);       //Henter med spørring
 $medlemmer = mysqli_fetch_all($result, MYSQLI_ASSOC);
-mysqli_free_result($result);    //frigir minne */           
-
-
-$stmt = $con->prepare($sql); 
-$stmt->execute();
-$result = $stmt->get_result(); 
-while ($row = $result->fetch_assoc()) {
-    $medlemmer[] = $row;
-}
-$stmt->close();
+mysqli_free_result($result);    //frigir minne           
+$con->close();
 
 
 ?>

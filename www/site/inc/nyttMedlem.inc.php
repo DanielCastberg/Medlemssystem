@@ -27,12 +27,7 @@ if (isset($_POST['contact-send'])){
 
     if(empty($feilmeldinger)){
         $medlem = medlem::lagMedlem($_POST);
-
         
-        echo "<pre>";
-        print_r($medlem->getArr());
-        echo "<pre>";
-
         $medlem->sendTilDB();
 
         foreach ($_POST as $k=>$v) {        //Sletter data i $_post
