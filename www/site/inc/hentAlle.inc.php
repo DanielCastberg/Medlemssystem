@@ -8,9 +8,9 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
     exit();
 }
 
-$sql = 'SELECT id AS ID, fornavn AS Navn, etternavn AS Etternavn, 
-tlf AS Telefonnummer, mail AS "E-post", fodselsdato AS Fødselsdato, 
-medlemSidenDato AS "Medlem siden", kontigentstatus AS "Status" 
+$sql = 'SELECT id, fornavn, etternavn, 
+tlf, mail, fodselsdato, 
+medlemSidenDato, kontigentstatus 
 FROM medlemmer 
 ORDER BY kontigentstatus DESC, id';       //Definerer spørring
                          
@@ -48,10 +48,10 @@ $con->close();
                                 case 1: $val = "Mann";           break;
                             }
                         }
-                        elseif ($navn == "Status"){
+                        elseif ($navn == "kontigentstatus"){
                             switch ($verdi){
-                                case 0: $val = "Inaktiv";    break;
-                                case 1: $val = "Aktiv";         break;
+                                case 0: $val = "Ikke betalt";    break;
+                                case 1: $val = "Betalt";         break;
                             }
                         }
                         else{

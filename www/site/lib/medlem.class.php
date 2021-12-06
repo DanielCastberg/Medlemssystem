@@ -143,19 +143,19 @@ class medlem{
         $m_query = "SELECT * FROM medlemmer WHERE
             medlemmer.mail='" . $mail . "'";
 
-        $r_query = "SELECT roller.id, roller.navn AS roller
+        $r_query = "SELECT roller.id, roller.navn
             FROM medlemmer
             JOIN rolleregister on medlemmer.id = rolleregister.mid
             JOIN roller on rolleregister.rid = roller.id
             WHERE medlemmer.mail ='" . $mail . "'";
 
-        $a_query = "SELECT aktiviteter.id, aktiviteter.navn AS aktiviteter
+        $a_query = "SELECT aktiviteter.id, aktiviteter.navn
             FROM medlemmer
             JOIN aktivitetspåmelding on medlemmer.id = aktivitetspåmelding.mid
             JOIN aktiviteter on aktivitetspåmelding.aid = aktiviteter.id
             WHERE medlemmer.mail ='" . $mail . "'";
 
-        $i_query = "SELECT interesser.id, interesser.navn AS interesser
+        $i_query = "SELECT interesser.id, interesser.navn
             FROM medlemmer
             JOIN interesseregister on medlemmer.id = interesseregister.mid
             JOIN interesser on interesseregister.iid = interesser.id
@@ -174,7 +174,7 @@ class medlem{
         if(is_object($result)) {      
             $r = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($r as $verdi){
-                $medlemArr["roller"][] = $verdi['roller'];
+                $medlemArr["navn"][] = $verdi['navn'];
             }
             mysqli_free_result($result);
         }
@@ -184,7 +184,7 @@ class medlem{
         if(is_object($result)) {  
             $a = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($a as $verdi){
-                $medlemArr["aktiviteter"][] = $verdi['aktiviteter'];
+                $medlemArr["navn"][] = $verdi['navn'];
             }  
             mysqli_free_result($result);
         } 
@@ -193,7 +193,7 @@ class medlem{
         if(is_object($result)) {       
             $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($i as $verdi){
-                $medlemArr["interesser"][] = $verdi['interesser'];
+                $medlemArr["navn"][] = $verdi['navn'];
             }
             mysqli_free_result($result);
         }

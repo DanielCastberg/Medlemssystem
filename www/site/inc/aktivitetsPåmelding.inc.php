@@ -17,7 +17,7 @@ INNER JOIN aktiviteter on aktivitetspåmelding.aid = aktiviteter.id
 ORDER BY medlemmer.id";                                  //Definerer spørring
 
 
-$sqlA = "SELECT aktiviteter.navn, aktiviteter.dato, medlemmer.fornavn AS ansvarlig
+$sqlA = "SELECT aktiviteter.navn, aktiviteter.dato, medlemmer.fornavn
 FROM aktiviteter
 INNER JOIN medlemmer on aktiviteter.ansvarlig_id = medlemmer.id
 ORDER BY aktiviteter.dato DESC";                       
@@ -53,7 +53,7 @@ mysqli_close($con);                                          //Lukker DB-connect
 
 
                 <?php echo "<br><h2>" . $aktivitet["navn"] . "</h2> Ansvarlig: " . 
-                $aktivitet["ansvarlig"] . "<br>Dato: " . $aktivitet["dato"]?>
+                $aktivitet["fornavn"] . "<br>Dato: " . $aktivitet["dato"]?>
 
                 <table border=1>
 

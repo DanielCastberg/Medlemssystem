@@ -73,9 +73,9 @@ if(isset($_POST['contact-send'])){
 
 }
 
-$sql = 'SELECT DISTINCT id as ID, fornavn AS Navn, etternavn AS Etternavn, 
-tlf AS Telefonnummer, mail AS "E-post", fodselsdato AS Fødselsdato, 
-medlemSidenDato AS "Medlem siden", kontigentstatus AS "Kontigentstatus" 
+$sql = 'SELECT DISTINCT id, fornavn, etternavn, 
+tlf, mail, fodselsdato, 
+medlemSidenDato, kontigentstatus
 FROM medlemmer ' . $join . ' ' .
 $where . ' ORDER by Kontigentstatus DESC, id; ';   
 
@@ -171,7 +171,7 @@ mysqli_close($con);                                          //Lukker DB-connect
 
 
                     <?php  
-                    $a_query = "SELECT id AS ID, navn AS Navn FROM aktiviteter";
+                    $a_query = "SELECT id, navn FROM aktiviteter";
                     
                     $con = dbConnect();
                     $result = mysqli_query($con, $a_query);    
@@ -182,11 +182,11 @@ mysqli_close($con);                                          //Lukker DB-connect
                     echo "<br></pre>";
                     
                     foreach($rader as $rad){
-                        echo '<option value=' . $rad['ID'] . ' '; 
+                        echo '<option value=' . $rad['id'] . ' '; 
                         if (isset($_POST["aktivitet"]) && 
-                            str_contains($_POST["aktivitet"], $rad['ID'])){
+                            str_contains($_POST["aktivitet"], $rad['id'])){
                         echo "selected ";}
-                        echo '>' . $rad['Navn'] . '</option>';
+                        echo '>' . $rad['navn'] . '</option>';
                     }
 
                     mysqli_free_result($result);
@@ -221,7 +221,7 @@ mysqli_close($con);                                          //Lukker DB-connect
                                 case 1: $val = "Mann";           break;
                             }
                         }
-                        elseif ($navn == "Kontigentstatus"){
+                        elseif ($navn == "kontigentstatus"){
                             switch ($verdi){
                                 case 0: $val = "Ikke Betalt";    break;
                                 case 1: $val = "Betalt";         break;
