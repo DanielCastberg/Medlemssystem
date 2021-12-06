@@ -329,40 +329,30 @@ class medlem{
         $query->execute();
         $query->close();
 
-        $deleteQuery = "";
-        $deleteTeller = 0;
+
         if (in_array('roller', $endringer)){
-            $deleteQuery .= 'DELETE FROM rolleregister WHERE mid=?; ';
-            $deleteTeller++;
-        }
-        if (in_array('interesser', $endringer)){
-            $deleteQuery .= 'DELETE FROM interesseregister WHERE mid=?; ';
-            $deleteTeller++;
-        }
-        if (in_array('aktiviteter', $endringer)){
-            $deleteQuery .= 'DELETE FROM aktivitetspåmelding WHERE mid=?; ';
-            $deleteTeller++;
-        }       
-
-        if($deleteTeller){
-            $delete = $con->prepare($deleteQuery);
-            
-            switch($deleteTeller){
-                case 1: 
-                    $delete->bind_param( 'i', 
-                    $this->id); break;
-                case 2: 
-                    $delete->bind_param( 'ii', 
-                    $this->id, $this->id); break;
-                case 3: 
-                    $delete->bind_param( 'iii', 
-                    $this->id, $this->id, $this->id); break;
-                    break;
-            }
-
+            $delete = $con->prepare('DELETE FROM rolleregister  
+                WHERE mid=' . $this->id
+            );
             $delete->execute();
             $delete->close();
         }
+            
+        if (in_array('interesser', $endringer)){
+            $delete = $con->prepare('DELETE FROM interesseregister  
+                WHERE mid=' . $this->id
+            );
+            $delete->execute();
+            $delete->close();
+        }
+
+        if (in_array('aktiviteter', $endringer)){
+            $delete = $con->prepare('DELETE FROM aktivitetspåmelding  
+                WHERE mid=' . $this->id
+            );
+            $delete->execute();
+            $delete->close();
+        }       
 
 
         if (in_array('roller', $endringer)){

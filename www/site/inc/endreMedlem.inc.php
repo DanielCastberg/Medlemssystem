@@ -33,6 +33,8 @@ $medlemObj;
 if (isset($_COOKIE['mail'])){
     $medlemObj = medlem::medlemFraDB($_COOKIE['mail']);
     $medlemObj->verdiTilID();
+    
+    
 }       //Inneholder array før endring
 
 
@@ -81,7 +83,6 @@ if (isset($_POST['contact-send'])) {
         if(!empty($endringer)){
 
             $medlemObj->endreDB($endringer);
-            print_r($_POST);
         }
         
     }
@@ -100,6 +101,7 @@ if (isset($_POST['contact-send'])) {
     }        
     $_POST = $medlemObj->getArr();
 }
+
 else{   //Sendes til form
 
     $_POST = $medlemObj->getArr();
