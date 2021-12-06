@@ -1,4 +1,11 @@
+<?php
+// Ikke fulført
 
+
+require '../inc/mysqli.inc.php';
+require '../lib/medlem.class.php';
+
+?>
 
 
 
@@ -81,7 +88,7 @@
 
 
                     <?php  
-                    $a_query = "SELECT id AS ID, navn AS Navn FROM aktiviteter";
+                    $a_query = "SELECT id , navn FROM aktiviteter";
                     
                     $con = dbConnect();
                     $result = mysqli_query($con, $a_query);    
@@ -92,11 +99,11 @@
                     echo "<br></pre>";
                     
                     foreach($rader as $rad){
-                        echo '<option value=' . $rad['ID'] . ' '; 
+                        echo '<option value=' . $rad['id'] . ' '; 
                         if (isset($_POST["aktivitet"]) && 
-                            str_contains($_POST["aktivitet"], $rad['ID'])){
+                            str_contains($_POST["aktivitet"], $rad['id'])){
                         echo "selected ";}
-                        echo '>' . $rad['Navn'] . '</option>';
+                        echo '>' . $rad['navn'] . '</option>';
                     }
 
                     mysqli_free_result($result);

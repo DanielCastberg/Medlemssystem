@@ -1,11 +1,11 @@
 <?php
-require '../lib/medlem.class.php';
+require 'site/lib/medlem.class.php';
 
 session_start();
 
 if(!isset($_SESSION['bruker']['innlogget']) ||
     $_SESSION['bruker']['innlogget'] !== true) {
-    header("Location: login.inc.php");
+    header("Location: site/funk/login.funk.php");
     exit();
 }
 
@@ -23,21 +23,28 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
 
     <body>
         <p>
-            <a href = "visProfil.inc.php">Min profil            </a><br><br>
-            <a href = "hentAlle.inc.php">Vis alle medlemmer     </a><br>
-            <a href = "hentMedFilter.inc.php">Filtrer medlemmer </a><br><br>   
+            <a href = "site/funk/visProfil.funk.php">
+                Min profil            </a><br><br>
+            <a href = "site/funk/hentAlle.funk.php">
+                Vis alle medlemmer     </a><br>
+            <a href = "site/funk/hentMedFilter.funk.php">
+                Filtrer medlemmer </a><br><br>   
              
             
             <?php
                 if(in_array("admin", $arr['roller'])){
-                    echo '<a href = "nyttMedlem.inc.php">Nytt medlem </a><br> 
-                          <a href = "velgEndring.inc.php">Endre Medlem </a><br><br>
-                          <a href = "aktivitetsPåmelding.inc.php">Vis aktiviteter og påmeldte</a><br>
-                          <a href = "nyAktivitet.inc.php">Legg til aktiviteter </a><br>';
+                    echo '<a href = "site/funk/nyttMedlem.funk.php">
+                            Nytt medlem </a><br> 
+                          <a href = "site/funk/velgEndring.funk.php">
+                            Endre Medlem </a><br><br>
+                          <a href = "site/funk/aktivitetsPåmelding.funk.php">
+                            Vis aktiviteter og påmeldte</a><br>
+                          <a href = "site/funk/nyAktivitet.funk.php">
+                            Legg til aktiviteter </a><br>';
                 }       
             ?>
         <p>
-            <a href = "loggUt.inc.php">Logg Ut </a><br><br>
+            <a href = "site/funk/loggUt.funk.php">Logg Ut </a><br><br>
         </p>
     </body>
 

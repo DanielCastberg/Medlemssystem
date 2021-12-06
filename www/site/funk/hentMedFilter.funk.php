@@ -1,19 +1,18 @@
 <?php
-require 'mysqli.inc.php';
 require '../lib/medlem.class.php';
 
 session_start();
 
 if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
     ($_SESSION['bruker']['innlogget'] !== true)) {
-    header("Location: login.inc.php");
+    header("Location: ./login.funk.php");
     exit();
 }
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
 if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
-    header("Location: forside.inc.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -96,7 +95,7 @@ mysqli_close($con);                                          //Lukker DB-connect
 <html>
     <body>
         <p>
-            <a href = "forside.inc.php">Tilbake til forsiden </a>
+            <a href = "../../index.php">Tilbake til forsiden </a>
             <br>
         <p>        
         <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">

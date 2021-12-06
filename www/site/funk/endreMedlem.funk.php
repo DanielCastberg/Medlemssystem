@@ -1,24 +1,23 @@
 <?php
-require '../inc/mysqli.inc.php';
 require '../lib/medlem.class.php';
 
 session_start();
 
 if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
     ($_SESSION['bruker']['innlogget'] !== true)) {
-    header("Location: login.inc.php");
+    header("Location: ./login.funk.php");
     exit();
 }
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
 if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
-    header("Location: forside.inc.php");
+    header("Location: ../../index.php");
     exit();
 }
 
 if (!isset($_COOKIE['mail'])){                      //Sjekker om cookie er laget
-    header("Location: velgEndring.inc.php");
+    header("Location: velgEndring.funk.php");
     exit();
 }
 
@@ -67,11 +66,11 @@ if (isset($_POST['contact-send'])) {
                 $endringer[] = $kategori;
             }
             
-            echo $kategori . " <br>";
+            /*echo $kategori . " <br>";
             print_r($_POST[$kategori]); 
             echo "<br>";
             print_r($medlemArr[$kategori]);
-            echo "<br> <br>";
+            echo "<br> <br>";*/
         }
 
 
@@ -130,7 +129,7 @@ else{   //Sendes til form
     <body>
 
     <p>
-        <a href = "forside.inc.php">Tilbake til forsiden </a>
+        <a href = "../../index.php">Tilbake til forsiden </a>
     </p>
     
     <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">

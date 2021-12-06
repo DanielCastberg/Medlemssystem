@@ -1,6 +1,5 @@
 <?php
-require 'mysqli.inc.php';
-include_once '../lib/medlem.class.php';
+require '../lib/medlem.class.php';
 
 if(isset($_REQUEST['loggin'])){
 
@@ -38,7 +37,7 @@ if(isset($_REQUEST['loggin'])){
             $_SESSION['bruker']['innlogget'] = true;    //Gir array verdi
             $_SESSION['bruker']['medlem'] = serialize($medlem);
 
-            header("Location: forside.inc.php");    //Sender til forsiden
+            header("Location: ../../index.php");    //Sender til forsiden
             exit;
 
             

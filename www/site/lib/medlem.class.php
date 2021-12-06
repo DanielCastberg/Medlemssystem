@@ -1,10 +1,8 @@
 <?php
 //Klasse for medlemmer.
 //Metoder tar array med verdier som parameter
-//
-//Ikke ferdig
 
-require_once '../inc/mysqli.inc.php';
+require __DIR__ . '/../inc/mysqli.inc.php';
 
 class medlem{
     private $id;
@@ -174,7 +172,7 @@ class medlem{
         if(is_object($result)) {      
             $r = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($r as $verdi){
-                $medlemArr["navn"][] = $verdi['navn'];
+                $medlemArr["roller"][] = $verdi['navn'];
             }
             mysqli_free_result($result);
         }
@@ -184,7 +182,7 @@ class medlem{
         if(is_object($result)) {  
             $a = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($a as $verdi){
-                $medlemArr["navn"][] = $verdi['navn'];
+                $medlemArr["aktiviteter"][] = $verdi['navn'];
             }  
             mysqli_free_result($result);
         } 
@@ -193,7 +191,7 @@ class medlem{
         if(is_object($result)) {       
             $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
             foreach($i as $verdi){
-                $medlemArr["navn"][] = $verdi['navn'];
+                $medlemArr["interesser"][] = $verdi['navn'];
             }
             mysqli_free_result($result);
         }
