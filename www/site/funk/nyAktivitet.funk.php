@@ -1,6 +1,5 @@
 <?php
 require '../lib/aktivitet.class.php';
-require '../lib/medlem.class.php';
 
 function settVerdi($i){
     if (isset($_POST[$i])) {echo $_POST[$i];} 
@@ -10,7 +9,7 @@ session_start();
 
 if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
     ($_SESSION['bruker']['innlogget'] !== true)) {
-    header("Location: login.inc.php");
+    header("Location: ./login.funk.php");
     exit();
 }
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
@@ -18,7 +17,7 @@ $brukerObj = unserialize($_SESSION['bruker']['medlem']);
 
 if ((!in_array('admin', $brukerArr['roller'])) && 
     (!in_array('leder', $brukerArr['roller']))){     //Sjekker om admin
-    header("Location: forside.inc.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -58,7 +57,7 @@ if (isset($_POST['contact-send'])){
     <body>
         <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <p>
-            <a href = "forside.inc.php">Tilbake til forsiden </a>
+            <a href = "../../index.php">Tilbake til forsiden </a>
             <br>
 
         <p>             <!––Input sendes med $_POST -->

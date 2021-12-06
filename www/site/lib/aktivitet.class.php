@@ -1,5 +1,5 @@
 <?php
-require '../inc/mysqli.inc.php';
+require '../lib/medlem.class.php';
 
 class aktivitet{
     private $navn;

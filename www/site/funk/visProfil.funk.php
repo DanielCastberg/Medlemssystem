@@ -1,11 +1,10 @@
 <?php
-require 'mysqli.inc.php';
 require '../lib/medlem.class.php';
 
 session_start();
 if(!isset($_SESSION['bruker']['innlogget']) ||
     $_SESSION['bruker']['innlogget'] !== true) {
-    header("Location: login.inc.php");
+    header("Location: ./login.funk.php");
     exit();
 }
 
@@ -62,7 +61,7 @@ if (isset($_POST['contact-send'])){             //Bildet er sendt
         move_uploaded_file($filTmpNavn, $mappePath);
         
         closedir($mappeRef);
-        header("Location: visProfil.inc.php");  //Refresher side
+        header("Location: ./visProfil.funk.php");  //Refresher side
         exit();
 
     }
@@ -85,7 +84,7 @@ if (isset($_POST['contact-send'])){             //Bildet er sendt
 
     <body>
         <p>
-            <a href = "forside.inc.php">Tilbake til forsiden </a>
+            <a href = "../../index.php">Tilbake til forsiden </a>
             <br>
         </p>
 

@@ -1,11 +1,11 @@
 <?php
-require 'mysqli.inc.php';
+require '../inc/mysqli.inc.php';
 
 session_start();
 
 if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
 ($_SESSION['bruker']['innlogget'] !== true)) {
-header("Location: login.inc.php");
+header("Location: ./login.funk.php");
 exit();
 }
 
@@ -46,7 +46,7 @@ mysqli_close($con);                                          //Lukker DB-connect
 
     <body>
         <p>
-            <a href = "forside.inc.php">Tilbake til forsiden </a>
+            <a href = "../../index.php">Tilbake til forsiden </a>
             <br>
         <p>
             <?php foreach ($aktiviteter as $aktivitet):?>

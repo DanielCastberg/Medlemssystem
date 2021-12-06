@@ -1,92 +1,9 @@
 <?php
-require 'mysqli.inc.php';
+// Ikke fulført
+
+
+require '../inc/mysqli.inc.php';
 require '../lib/medlem.class.php';
-
-session_start();
-
-if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
-    ($_SESSION['bruker']['innlogget'] !== true)) {
-    header("Location: login.inc.php");
-    exit();
-}
-$brukerObj = unserialize($_SESSION['bruker']['medlem']);
-    $brukerArr = $brukerObj->getArr();
-
-if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
-    header("Location: forside.inc.php");
-    exit();
-}
-
-$where = "";
-$join  = ""; 
-if(isset($_POST['contact-send'])){
-
-    $where = "WHERE ";
-
-    switch($_POST['Kontigentstatus']){
-        case 'ikkebetalt': $where .= "kontigentstatus = 0"; break;
-        case 'betalt'    : $where .= "kontigentstatus = 1"; break;
-    }
-
-    if(!str_contains($_POST['rolle'], "alle")){
-        $join  .= "JOIN rolleregister on rolleregister.mid = medlemmer.id ";
-        if(!str_contains($_POST['Kontigentstatus'], "alle")){
-            $where .= " AND ";
-        }
-    }
-    
-    switch($_POST['rolle']){
-        case 'Admin':  $where .= "rolleregister.rid = 1"; break;
-        case 'Leder':  $where .= "rolleregister.rid = 2"; break;
-        case 'Medlem': $where .= "rolleregister.rid = 3"; break;
-        default: $forrige = FALSE;
-    }
-
-    if(!str_contains($_POST['interesse'], "alle")){
-        $join  .= "JOIN interesseregister on interesseregister.mid = medlemmer.id ";
-        if(!str_contains($_POST['rolle'], "alle") || 
-        (!str_contains($_POST['Kontigentstatus'], "alle"))){
-            $where .= " AND ";
-        }
-    }
-    
-    switch($_POST['interesse']){
-        case 'Fotball': $where .= "interesseregister.iid = 1"; break;
-        case 'Dart':    $where .= "interesseregister.iid = 2"; break;
-        case 'Biljard': $where .= "interesseregister.iid = 3"; break;
-        case 'Dans':    $where .= "interesseregister.iid = 4"; break;
-        default: $forrige = FALSE;
-    }
-
-    
-    if(!str_contains($_POST['aktivitet'], "alle")){
-        $join  .= "JOIN aktivitetspåmelding on aktivitetspåmelding.mid = medlemmer.id ";
-        if(!str_contains($_POST['rolle'], "alle") || !str_contains($_POST['interesse'], "alle") || 
-        (!str_contains($_POST['Kontigentstatus'], "alle"))){
-            $where .= " AND ";
-        }
-        $where .= "aktivitetspåmelding.aid = " . $_POST['aktivitet'];
-    }
-
-    if (strlen($where) < 7){$where = "";    //Tom streng dersom ingen filter sendes
-    }
-
-}
-
-$sql = 'SELECT DISTINCT id, fornavn, etternavn, 
-tlf, mail, fodselsdato, 
-medlemSidenDato, kontigentstatus
-FROM medlemmer ' . $join . ' ' .
-$where . ' ORDER by Kontigentstatus DESC, id; ';   
-
-$con = dbConnect();
-
-$result = mysqli_query($con, $sql);                          //Henter med spørring
-$medlemmer = mysqli_fetch_all($result, MYSQLI_ASSOC);
-mysqli_free_result($result);                                 //frigir minne
-
-mysqli_close($con);                                          //Lukker DB-connection
-
 
 ?>
 
@@ -171,7 +88,7 @@ mysqli_close($con);                                          //Lukker DB-connect
 
 
                     <?php  
-                    $a_query = "SELECT id, navn FROM aktiviteter";
+                    $a_query = "SELECT id , navn FROM aktiviteter";
                     
                     $con = dbConnect();
                     $result = mysqli_query($con, $a_query);    

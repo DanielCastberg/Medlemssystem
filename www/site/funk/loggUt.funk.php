@@ -1,6 +1,6 @@
 <?php
 session_start();
 session_destroy();
-header("Location: login.inc.php");
+header("Location: ./login.funk.php");
 
 ?>
