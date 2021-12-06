@@ -136,7 +136,7 @@ class medlem{
         return $obj;
     }
 
-    public static function medlemFraDB($mail){
+    public static function medlemFraDB($mail){   //Returnerer objekt med verdier fra DB
 
         $con = dbConnect();
 
@@ -260,7 +260,7 @@ class medlem{
         
     }
 
-    public function verdiTilID(){
+    public function verdiTilID(){               //Endrer navn på elementer til deres id i DB
         foreach ($this->interesser as $index => $interesse){
             switch($interesse){
                 case "Fotball": 
@@ -312,7 +312,7 @@ class medlem{
 
     }
 
-    public function endreDB($endringer){
+    public function endreDB($endringer){        //Endrer DB til å samsvare med objekt
 
         $con = dbConnect();
 

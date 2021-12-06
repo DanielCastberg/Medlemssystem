@@ -52,18 +52,26 @@ if (isset($_POST['contact-send'])) {
             if (!empty($medlemArr[$kategori]) && isset($_POST[$kategori])){
                 sort($_POST[$kategori]); sort($medlemArr[$kategori]);
 
-                if((array_count_values($_POST[$kategori]) != 
-                   (array_count_values($_POST[$kategori])))){
+                if((array_count_values($_POST[$kategori])) != 
+                   (array_count_values($_POST[$kategori]))){
                         $endringer[] = $kategori;
                     
                 }elseif (!empty(array_diff_assoc($medlemArr[$kategori], $_POST[$kategori]))){
                     $endringer[] = $kategori;
+
+                }elseif($_POST[$kategori] != $_POST[$kategori]){
+                     $endringer[] = $kategori;
                 }
 
             }elseif(!empty($medlemArr[$kategori]) xor isset($_POST[$kategori])){
                 $endringer[] = $kategori;
             }
             
+            echo $kategori . " <br>";
+            print_r($_POST[$kategori]); 
+            echo "<br>";
+            print_r($medlemArr[$kategori]);
+            echo "<br> <br>";
         }
 
 
@@ -105,11 +113,6 @@ if (isset($_POST['contact-send'])) {
 else{   //Sendes til form
 
     $_POST = $medlemObj->getArr();
-
-    //Fjerner cookie
-    //setcookie('mail', $_POST['mail'], time() - 21600);
-
-
 }             
 ?>
 

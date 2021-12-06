@@ -16,7 +16,7 @@ if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
-if ((!in_array('admin', $brukerArr['roller'])) || 
+if ((!in_array('admin', $brukerArr['roller'])) && 
     (!in_array('leder', $brukerArr['roller']))){     //Sjekker om admin
     header("Location: forside.inc.php");
     exit();

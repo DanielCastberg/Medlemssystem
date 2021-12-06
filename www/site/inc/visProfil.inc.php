@@ -60,6 +60,10 @@ if (isset($_POST['contact-send'])){             //Bildet er sendt
 
         //Flytter nytt til katalog
         move_uploaded_file($filTmpNavn, $mappePath);
+        
+        closedir($mappeRef);
+        header("Location: visProfil.inc.php");  //Refresher side
+        exit();
 
     }
 
