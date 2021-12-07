@@ -41,7 +41,13 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
                             Vis aktiviteter og påmeldte</a><br>
                           <a href = "site/funk/nyAktivitet.funk.php">
                             Legg til aktiviteter </a><br>';
-                }       
+                }    
+                if((in_array("admin", $arr['roller'])) || (in_array("admin", $arr['leder']))){
+                    echo '<br><a href = "site/funk/mailVelgMange.funk.php">
+                            Send Mail til en gruppe</a><br>';
+                    echo '<a href = "site/funk/mailVelgEn.funk.php">
+                            Send Mail til ett medlem</a><br>';
+                }
             ?>
         <p>
             <a href = "site/funk/loggUt.funk.php">Logg Ut </a><br><br>

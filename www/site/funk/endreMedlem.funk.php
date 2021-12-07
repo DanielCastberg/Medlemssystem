@@ -66,11 +66,11 @@ if (isset($_POST['contact-send'])) {
                 $endringer[] = $kategori;
             }
             
-            /*echo $kategori . " <br>";
+            echo $kategori . " <br>";
             print_r($_POST[$kategori]); 
             echo "<br>";
             print_r($medlemArr[$kategori]);
-            echo "<br> <br>";*/
+            echo "<br> <br>";
         }
 
 

@@ -1,161 +1,66 @@
 <?php
-// Ikke fulført
-
-
-require '../inc/mysqli.inc.php';
 require '../lib/medlem.class.php';
 
+session_start();
+
+if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
+    ($_SESSION['bruker']['innlogget'] !== true)) {
+    header("Location: ./login.funk.php");
+    exit();
+}
+$brukerObj = unserialize($_SESSION['bruker']['medlem']);
+    $brukerArr = $brukerObj->getArr();
+
+if ((!in_array('admin', $brukerArr['roller'])) &&
+    (!in_array('admin', $brukerArr['roller']))){     //Sjekker om admin
+    header("Location: ../../index.php");
+    exit();
+}
+
+if (!isset($_COOKIE['mottakere'])){                      //Sjekker om cookie er laget
+    header("Location: ../../index.php");
+    exit();
+}
+
+$cookie = $_COOKIE['mottakere'];
+$cookie = stripslashes($cookie);
+
+$mottakere = json_decode($cookie, TRUE);
+$mottakere = implode(',', $mottakere);
+
+
+    $emne = "overskrift"; 
+    $melding = 'Dette er en melding'; 
+    $avsender = "phpgruppe25@gmail.com"; 
+
+
+    $headers = "From: Neo Ungdomsklubb" . $avsender . "\r\n" . 
+    "Reply-To: " . $avsender . " \r\n" . 
+    "X-Mailer: PHP/" . phpversion(); 
+    mail($mottakere, $emne, $melding, $headers);
+
+
+
+
+/*
+$mail = new PHPMailer();                    //Lag instans av phpmailer
+$mail->isSMTP();                            //Sett mailer til smtp
+$mail->Host = "smtp.gmail.com";             //Definer smtp host
+$mail -> SMTPAuth = "true";                 //SMTP autotentikasjon
+$mail->SMTPSecure = "tls";                  //Sett type kryptering
+$mail->Port = "587";                        //Sett port til connect smtp
+$mail->Username = "phpgruppe25@gmail.com";  //Sett gmail
+$mail->Password = "123qwerty!";             //Sett passord
+
+$mail->Subject = "Test PHPMailer";          //Sett emne
+$mail->SetFrom("phpgruppe25@gmail.com");    //Avsender
+$mail->Body = "Plain tekst i mailen";       //Innhold body
+$mail->addAddress("phpgruppe25@gmail.com"); //Sett mottaker
+
+if ( $mail->Send() ) {                      //Sender mail
+    echo "Email sendt";
+}else {
+    echo "Email feilet";
+}                             
+$mail->smtpClose();                         //Stopp smtp*/
 ?>
-
-
-
-<!doctype html>
-<html>
-    <body>
-        <p>
-            <a href = "forside.inc.php">Tilbake til forsiden </a>
-            <br>
-        <p>        
-        <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-            <label for="Kontigentstatus">Kontigentstatus</label><br>
-            <select name="Kontigentstatus">
-                <option value="alle" <?php if ((isset($_POST["Kontigentstatus"]) && 
-                        str_contains($_POST["Kontigentstatus"], "alle"))){
-                            echo " selected";}?>>Vis alle</option>
-
-                <option value="betalt" <?php if ((isset($_POST["Kontigentstatus"]) && 
-                        str_contains($_POST["Kontigentstatus"], "betalt"))){
-                            echo " selected";}?>>Betalt</option>
-
-                <option value="ikkebetalt" <?php if ((isset($_POST["Kontigentstatus"]) && 
-                        str_contains($_POST["Kontigentstatus"], "ikkebetalt"))){
-                            echo " selected";}?>>Ikke betalt</option>
-            </select>
-            <p>
-        
-            <label for="rolle">Rolle</label><br>
-                <select name="rolle">       
-                    <option value="alle" <?php if ((isset($_POST["rolle"]) && 
-                        str_contains($_POST["rolle"], "alle"))){
-                            echo " selected";}?>>Vis alle</option>
-
-                    <option value="Admin"   <?php if ((isset($_POST["rolle"]) && 
-                        str_contains($_POST["rolle"], "Admin"))){
-                            echo "selected";}?>>Admin</option>
-                    
-                    <option value="Leder"   <?php if ((isset($_POST["rolle"]) && 
-                        str_contains($_POST["rolle"], "Leder"))){
-                            echo "selected";}?>>Leder</option>
-                    
-                    <option value="Medlem"  <?php if ((isset($_POST["rolle"]) && 
-                        str_contains($_POST["rolle"], "Medlem"))){
-                            echo "selected";}?>>Medlem</option>
-            </select>
-
-            <p>
-
-            <label for="interesse">Interesse</label><br>
-                <select name="interesse">       
-                    <option value="alle" <?php if ((isset($_POST["interesse"]) && 
-                        str_contains($_POST["interesse"], "alle"))){
-                            echo " selected";}?>>Vis alle</option>
-
-                    <option value="Fotball"   <?php if ((isset($_POST["interesse"]) && 
-                        str_contains($_POST["interesse"], "Fotball"))){
-                            echo "selected";}?>>Fotball</option>
-                    
-                    <option value="Dart"   <?php if ((isset($_POST["interesse"]) && 
-                        str_contains($_POST["interesse"], "Dart"))){
-                            echo "selected";}?>>Dart</option>
-                    
-                    <option value="Biljard"  <?php if ((isset($_POST["interesse"]) && 
-                        str_contains($_POST["interesse"], "Biljard"))){
-                            echo "selected";}?>>Biljard</option>
-                    <option value="Dans"  <?php if ((isset($_POST["interesse"]) && 
-                        str_contains($_POST["interesse"], "Dans"))){
-                            echo "selected";}?>>Dans</option>
-            </select>
-
-            <p>
-
-            <label for="aktivitet">Aktivitet</label><br>
-                <select name="aktivitet">       
-                    <option value="alle" 
-                    <?php if ((isset($_POST["interesse"]) && 
-                        str_contains($_POST["aktivitet"], "alle"))){
-                        echo " selected";
-                        }?>>Vis alle</option>
-
-
-                    <?php  
-                    $a_query = "SELECT id , navn FROM aktiviteter";
-                    
-                    $con = dbConnect();
-                    $result = mysqli_query($con, $a_query);    
-                    $rader = mysqli_fetch_all($result, MYSQLI_ASSOC);   //Henter passord om 
-
-                    echo "<br><pre>";
-                    print_r($rader);
-                    echo "<br></pre>";
-                    
-                    foreach($rader as $rad){
-                        echo '<option value=' . $rad['id'] . ' '; 
-                        if (isset($_POST["aktivitet"]) && 
-                            str_contains($_POST["aktivitet"], $rad['id'])){
-                        echo "selected ";}
-                        echo '>' . $rad['navn'] . '</option>';
-                    }
-
-                    mysqli_free_result($result);
-                    ?>
-                </select>
-
-                    
-                    
-            </select>
-            
-        
-        <p>               <!––"send" knapp -->
-            <button type="submit" name="contact-send">Filtrer</button>   
-        </form>
-        
-
-        <p>
-            <br><b>Viser aktuelle medlemmer:</b>
-        
-        <p>
-            <table border=1>
-                <tr>
-                <?php if(!empty($medlemmer)):?>
-                <?php foreach ($medlemmer[0] as $navn => $verdi){echo "<td><b>" . $navn . "</b></td>";}?>
-
-                <?php foreach($medlemmer as $medlem):?>
-                    <tr><?php foreach ($medlem as $navn => $verdi){
-
-                        if ($navn == "kjonn"){              //Endrer fra boolsk verdi
-                            switch ($verdi){
-                                case 0: $val = "Kvinne";         break;
-                                case 1: $val = "Mann";           break;
-                            }
-                        }
-                        elseif ($navn == "kontigentstatus"){
-                            switch ($verdi){
-                                case 0: $val = "Ikke Betalt";    break;
-                                case 1: $val = "Betalt";         break;
-                            }
-                        }
-                        else{
-                            $val = $verdi;                 //Legger verdi i $val
-                        }
-                        
-                        echo "<td>" . $val . "</td>";}      //Utskrift i rute
-                        ?>
-
-                <?php   endforeach; endif; ?>
-            
-                </tr>
-            
-            </table> 
-        </p>
-    </body>
-</html>
