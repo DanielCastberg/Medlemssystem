@@ -34,39 +34,60 @@ $cookie = $_COOKIE['mottakere'];
 $cookie = stripslashes($cookie);
 $mottakere = json_decode($cookie, TRUE);   
 
-print_r($mottakere);
-
 $avsender = "phpgruppe25@gmail.com"; 
 
+if (isset($_POST['contact-send'])){
 
+    $mail = new PHPMailer();                    //Lag instans av phpmailer
+    $mail->isSMTP();                            //Sett mailer til smtp
+    $mail->Host = "smtp.gmail.com";             //Definer smtp host
+    $mail -> SMTPAuth = "true";                 //SMTP autotentikasjon
+    $mail->SMTPSecure = "tls";                  //Sett type kryptering
+    $mail->Port = "587";                        //Sett port til connect smtp
+    $mail->Username = "phpgruppe25@gmail.com";                //Sett gmail
+    $mail->Password = "123qwerty!";             //Sett passord
 
-$mail = new PHPMailer();                    //Lag instans av phpmailer
-$mail->isSMTP();                            //Sett mailer til smtp
-$mail->Host = "smtp.gmail.com";             //Definer smtp host
-$mail -> SMTPAuth = "true";                 //SMTP autotentikasjon
-$mail->SMTPSecure = "tls";                  //Sett type kryptering
-$mail->Port = "587";                        //Sett port til connect smtp
-$mail->Username = "phpgruppe25@gmail.com";                //Sett gmail
-$mail->Password = "123qwerty!";             //Sett passord
+    $mail->Subject = $_POST['emne'];            //Sett emne
+    $mail->SetFrom("phpgruppe25@gmail.com");    //Avsender
+    $mail->Body = $_POST['melding'];            //Innhold body
+    $mail->to = $mottakere[0];
+    foreach ($mottakere as $mottaker){
+        $mail->addAddress($mottaker);           //Sett mottakere
+    }
 
-$mail->Subject = "Test PHPMailer";          //Sett emne
-$mail->SetFrom("phpgruppe25@gmail.com");                  //Avsender
-$mail->Body = "Plain tekst i mailen";       //Innhold body
-
-foreach ($mottakere as $mottaker){
-    $mail->addAddress($mottaker);           //Sett mottakere
+    if ( $mail->Send() ) {                      //Sender mail
+        echo "Email sendt";
+    }else {
+        echo "Email feilet. Venligst prøv igjen";
+    }                             
+    $mail->smtpClose();                         //Stopp smtp
 }
-
-if ( $mail->Send() ) {                      //Sender mail
-    echo "Email sendt";
-}else {
-    echo "Email feilet";
-}                             
-$mail->smtpClose();                         //Stopp smtp
 ?>
 
 <html>
-    <body>
+    <header>
         <a href = "../../index.php">Tilbake til forsiden </a>
+        
+        <h2>Send Mail</h2>
+        <b>Mottaker(e):</b><br>
+        <?php foreach($mottakere as $mottaker){
+            echo $mottaker . "<br>";}
+        ?>
+    </header>
+    <body>
+        <p>
+            <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+
+            <label for="emne">Emne</label><br>
+            <textarea name="emne" rows="1" cols="50">                
+            </textarea> 
+
+        <p>
+            <label for="melding">Melding</label><br>
+            <textarea name="melding" rows="5" cols="50">                
+            </textarea> 
+        <p>              
+            <button type="submit" name="contact-send">Send</button> 
+        </p>
     </body>
 </html>
