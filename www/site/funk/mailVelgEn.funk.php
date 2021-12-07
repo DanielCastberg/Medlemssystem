@@ -20,7 +20,7 @@ if(isset($_POST['contact-send'])){
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Ny aktivitet</title>
+        <title>Velg medlem</title>
     </head>
 
     <body>
@@ -40,7 +40,7 @@ if(isset($_POST['contact-send'])){
             $rader = mysqli_fetch_all($result, MYSQLI_ASSOC);
             mysqli_free_result($result);  
             mysqli_close($con);      
-            echo '<option value="" disabled selected>Velg ansvarlig</option>';
+            echo '<option value="" disabled selected>Velg medlem</option>';
                 
             foreach($rader as $medlem){
             echo '<option value="' . $medlem['mail'] . '">' . 
