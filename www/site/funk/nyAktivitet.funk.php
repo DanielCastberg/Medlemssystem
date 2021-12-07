@@ -77,6 +77,8 @@ if (isset($_POST['contact-send'])){
 
                 $result = mysqli_query($con, $query);           
                 $rader = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                mysqli_free_result($result);  
+                mysqli_close($con);      
                 echo '<option value="" disabled selected>Velg ansvarlig</option>';
                 
                 foreach($rader as $leder){

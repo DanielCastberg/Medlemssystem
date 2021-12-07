@@ -1,9 +1,6 @@
 <?php
-// Ikke fulført
 require '../lib/medlem.class.php';
 
-
-print_r($_POST);
 
 $where = "";
 $join = "";

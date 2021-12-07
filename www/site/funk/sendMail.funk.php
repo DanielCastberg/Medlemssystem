@@ -46,11 +46,11 @@ $mail->Host = "smtp.gmail.com";             //Definer smtp host
 $mail -> SMTPAuth = "true";                 //SMTP autotentikasjon
 $mail->SMTPSecure = "tls";                  //Sett type kryptering
 $mail->Port = "587";                        //Sett port til connect smtp
-$mail->Username = $avsender;                //Sett gmail
+$mail->Username = "phpgruppe25@gmail.com";                //Sett gmail
 $mail->Password = "123qwerty!";             //Sett passord
 
 $mail->Subject = "Test PHPMailer";          //Sett emne
-$mail->SetFrom($avsender);                  //Avsender
+$mail->SetFrom("phpgruppe25@gmail.com");                  //Avsender
 $mail->Body = "Plain tekst i mailen";       //Innhold body
 
 foreach ($mottakere as $mottaker){
@@ -64,3 +64,9 @@ if ( $mail->Send() ) {                      //Sender mail
 }                             
 $mail->smtpClose();                         //Stopp smtp
 ?>
+
+<html>
+    <body>
+        <a href = "../../index.php">Tilbake til forsiden </a>
+    </body>
+</html>
