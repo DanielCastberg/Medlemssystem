@@ -50,7 +50,6 @@ if (isset($_POST['contact-send'])){
     $mail->Subject = $_POST['emne'];            //Sett emne
     $mail->SetFrom("phpgruppe25@gmail.com");    //Avsender
     $mail->Body = $_POST['melding'];            //Innhold body
-    $mail->to = $mottakere[0];
     foreach ($mottakere as $mottaker){
         $mail->addAddress($mottaker);           //Sett mottakere
     }
@@ -67,7 +66,7 @@ if (isset($_POST['contact-send'])){
 <html>
     <header>
         <a href = "../../index.php">Tilbake til forsiden </a>
-        
+
         <h2>Send Mail</h2>
         <b>Mottaker(e):</b><br>
         <?php foreach($mottakere as $mottaker){
