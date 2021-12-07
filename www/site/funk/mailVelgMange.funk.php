@@ -3,12 +3,13 @@
 require '../lib/medlem.class.php';
 
 
+print_r($_POST);
 
 $where = "";
-$join  = ""; 
-if(isset($_POST['filter'])){
+$join = "";
+if((isset($_POST['filter'])) || (isset($_POST['contact-send']))){
 
-    $where = "WHERE ";
+    $where = "WHERE "; 
 
     switch($_POST['Kontigentstatus']){
         case 'ikkebetalt': $where .= "kontigentstatus = 0"; break;
@@ -60,24 +61,25 @@ if(isset($_POST['filter'])){
 
 }
 
+
 $sql = 'SELECT DISTINCT id, fornavn, etternavn, mail
 FROM medlemmer ' . $join . ' ' .
 $where . ' ORDER by Kontigentstatus DESC, id; ';   
 
 $con = dbConnect();
-
 $result = mysqli_query($con, $sql);                          //Henter med spørring
 $medlemmer = mysqli_fetch_all($result, MYSQLI_ASSOC);
 mysqli_free_result($result);                                 //frigir minne
-
 mysqli_close($con);                                          //Lukker DB-connection
+
 
 if(isset($_POST['contact-send'])){
 
+    $arr = array();
     foreach($medlemmer as $medlem){
         $arr[] = $medlem['mail'];
     }
-    
+
     $json = json_encode($arr);              //Bruker json til å sende array som cookie
 
     setcookie('mottakere', '', time() - 21600);
