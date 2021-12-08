@@ -189,6 +189,8 @@ mysqli_close($con);                                          //Lukker DB-connect
                     }
 
                     mysqli_free_result($result);
+                    
+                    mysqli_close($con);   
                     ?>
                 </select>
 

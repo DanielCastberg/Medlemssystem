@@ -25,9 +25,9 @@ class medlem{
 
 
 
-    private function setVerdier($arr){             //Lager objekt fra array
+    private function setVerdier($arr){             //Setter inn verdier fra array
 
-        foreach($arr as $k => $v){
+        foreach($arr as $k => $v){                 //Går igjennom alle verdier
 
             switch($k){
                 case 'id':              $this->id = $v;                 break;
@@ -50,11 +50,11 @@ class medlem{
         }
     }    
     
-    public static function sjekkOmGyldig($arr){        //Henter array med evt feilmeldinger
+    public static function sjekkOmGyldig($arr){   //Henter array med evt feilmeldinger
     
-        $messages = array();    //Lagrer feilmeldinger i array
+        $messages = array();                           //Lagrer feilmeldinger i array
 
-        if (empty($arr['fornavn'])){   
+        if (empty($arr['fornavn'])){                   //Tom verdi
             $messages[] = "Du må fylle inn fornavn";            
         }
         if (empty($arr['etternavn'])){   
@@ -67,7 +67,7 @@ class medlem{
         if (empty($arr['postnummer'])){   
             $messages[] = "Du må fylle inn postnummer";         
         }
-        elseif((1000 > $arr['postnummer']) || 
+        elseif((1000 > $arr['postnummer']) ||          //Ugyldig verdi
             ( $arr['postnummer'] > 9999 )){
                 $messages[] = "Ugyldig postnummer";          
         }
@@ -102,10 +102,10 @@ class medlem{
             $messages[] = "Du må fylle inn kontigentstatus";    
         }
     
-        return $messages;
+        return $messages;          //Returnerer array
     }
 
-    public function getArr(){                     //Henter Array med verdier
+    public function getArr(){                     //Henter Array med verdier fra objekt
 
         $arr = array(
             'id'                => $this->id,
@@ -124,35 +124,39 @@ class medlem{
             'kontigentstatus'   => $this->kontigentstatus
         );
 
-        return $arr;
+        return $arr;                             //Returnerer array
     }
 
     public static function lagMedlem($arr){      //Returnerer obj
 
-        $obj = new medlem();
-        $obj->setVerdier($arr);
+        $obj = new medlem();                     //Lager objekt
+        $obj->setVerdier($arr);                  //Setter inn verdier
         return $obj;
     }
 
     public static function medlemFraDB($mail){   //Returnerer objekt med verdier fra DB
 
-        $con = dbConnect();
+        //Henter verdier fra db
 
+        //Medlemmer
         $m_query = "SELECT * FROM medlemmer WHERE
             medlemmer.mail='" . $mail . "'";
 
+        //Roller
         $r_query = "SELECT roller.id, roller.navn
             FROM medlemmer
             JOIN rolleregister on medlemmer.id = rolleregister.mid
             JOIN roller on rolleregister.rid = roller.id
             WHERE medlemmer.mail ='" . $mail . "'";
 
+        //Aktiviteter
         $a_query = "SELECT aktiviteter.id, aktiviteter.navn
             FROM medlemmer
             JOIN aktivitetspåmelding on medlemmer.id = aktivitetspåmelding.mid
             JOIN aktiviteter on aktivitetspåmelding.aid = aktiviteter.id
             WHERE medlemmer.mail ='" . $mail . "'";
 
+        //Interesser
         $i_query = "SELECT interesser.id, interesser.navn
             FROM medlemmer
             JOIN interesseregister on medlemmer.id = interesseregister.mid
@@ -160,14 +164,18 @@ class medlem{
             WHERE medlemmer.mail ='" . $mail . "'";
 
 
-        $result = mysqli_query($con, $m_query);          
-        if(is_object($result)) {
-            $m = mysqli_fetch_all($result, MYSQLI_ASSOC);
-            $medlemArr = $m[0];                             //Arr med medlemsdata
-            mysqli_free_result($result);
+        
+        $con = dbConnect();                                 //Oppretter mysqli
+
+        //Medlem
+        $result = mysqli_query($con, $m_query);             //Henter medlem
+        if(is_object($result)) {    
+            $m = mysqli_fetch_all($result, MYSQLI_ASSOC);   //Arr
+            $medlemArr = $m[0];                             //Rad
+            mysqli_free_result($result);                    //Frigir minne
         }
         
-
+        //Roller
         $result = mysqli_query($con, $r_query);               
         if(is_object($result)) {      
             $r = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -177,7 +185,7 @@ class medlem{
             mysqli_free_result($result);
         }
         
-        
+        //Aktiviteter
         $result = mysqli_query($con, $a_query);                   
         if(is_object($result)) {  
             $a = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -187,6 +195,7 @@ class medlem{
             mysqli_free_result($result);
         } 
         
+        //Interesser
         $result = mysqli_query($con, $i_query);   
         if(is_object($result)) {       
             $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -196,36 +205,43 @@ class medlem{
             mysqli_free_result($result);
         }
         
-        $con->close();
-        $medlem = medlem::lagMedlem($medlemArr);
-        return $medlem;
+        $con->close();                              //Lukker mysqli
+        $medlem = medlem::lagMedlem($medlemArr);    //Lager objekt
+        return $medlem;                             //Returnerer objekt
     }
 
     public function sendTilDB(){                //Laster objekt opp på DB
-        $con = dbConnect();
+
+        $con = dbConnect();                     //mysqli
+
+        //Prepared statement - Insert medlem
         $m_query = $con->prepare('INSERT INTO medlemmer(medlemmer.fornavn, 
         medlemmer.etternavn, medlemmer.adresse, medlemmer.postnummer, 
         medlemmer.tlf, medlemmer.mail, medlemmer.fodselsdato, 
         medlemmer.kjonn, medlemmer.medlemSidenDato, medlemmer.kontigentstatus)
         VALUES(?,?,?,?,?,?,?,?,?,?)');
 
+        //Setter inn verdier fra obj
         $m_query->bind_param('sssiissisi', $this->fornavn, $this->etternavn, 
         $this->adresse, $this->postnummer, $this->tlf, $this->mail, 
         $this->fodselsdato, $this->kjonn, $this->dato, $this->kontigentstatus);
 
-        $m_query->execute();
-        $m_query->close();
+        $m_query->execute();    //Utfører query
+        $m_query->close();      //Lukker query
 
+        //Query - Henter id
         $i_query = "SELECT id FROM medlemmer WHERE     
         mail = '" . $this->mail . "';";
-
-        $result = mysqli_query($con, $i_query);     //Henter id fra DB
+        
+        //Utfører spørring
+        $result = mysqli_query($con, $i_query);         
         $i = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        mysqli_free_result($result);                //Frigir minne
-        $this->id = $i[0]["id"];                    //Legger id i variabel
+        mysqli_free_result($result);                 
+        $this->id = $i[0]["id"];                        //Legger til ID i obj
 
-        foreach ($this->interesser as $interesse){
 
+        //Legger inn interesser
+        foreach ($this->interesser as $interesse){      
             $sqlInsertInteresse = $con->prepare
                 ('INSERT INTO interesseregister (mid, iid)
                 VALUES (?, ?)'
@@ -234,8 +250,9 @@ class medlem{
             $sqlInsertInteresse->execute();
             $sqlInsertInteresse->close();
         }
-        foreach ($this->roller as $rolle){
 
+        //Legger inn roller
+        foreach ($this->roller as $rolle){
             $sqlInsertRolle = $con->prepare
                 ('INSERT INTO rolleregister (mid, rid)
                 VALUES (?, ?)'
@@ -244,8 +261,9 @@ class medlem{
             $sqlInsertRolle->execute();
             $sqlInsertRolle->close();
         }
+        
+        //Legger inn aktiviteter
         foreach ($this->aktiviteter as $aktivitet){
-    
             $sqlInsertAktivitet = $con->prepare
                 ('INSERT INTO aktivitetspåmelding (mid, aid)
                 VALUES (?, ?)'
@@ -254,11 +272,13 @@ class medlem{
             $sqlInsertAktivitet->execute();
             $sqlInsertAktivitet->close();
         }
-        $con->close();
+        $con->close();                          //Lukker mysqli
         
     }
 
     public function verdiTilID(){               //Endrer navn på elementer til deres id i DB
+
+        //Interesser
         foreach ($this->interesser as $index => $interesse){
             switch($interesse){
                 case "Fotball": 
@@ -274,8 +294,10 @@ class medlem{
                     unset($this->interesser[$index]); 
                     $this->interesser[] = 4; break;
             }
-        }sort($this->interesser);
+        }sort($this->interesser);       //Sorterer array
 
+
+        //Roller
         foreach ($this->roller as $index => $rolle){
             switch($rolle){
                 case "admin": 
@@ -290,14 +312,13 @@ class medlem{
             }
         }sort($this->roller);
 
-        //Henter aktiviteter fra DB
+
+        //Aktiviteter
         $con = dbConnect();
         $query = "SELECT id, navn FROM aktiviteter";
-
         $result = mysqli_query($con, $query);           
-        $rader = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-        mysqli_free_result($result);                                 //frigir minne
+        $rader = mysqli_fetch_all($result, MYSQLI_ASSOC); //Henter rader fra DB          
+        mysqli_free_result($result);                      //Frigir minne
         mysqli_close($con);  
 
         foreach ($rader as $rad){
@@ -312,40 +333,47 @@ class medlem{
 
     public function endreDB($endringer){        //Endrer DB til å samsvare med objekt
 
-        $con = dbConnect();
+        $con = dbConnect();     //Mysqli
 
+        //Prepared statement - Endre medlem
         $query = $con->prepare('UPDATE medlemmer
         SET fornavn = ?, etternavn = ?, adresse = ?, 
         postnummer = ?, tlf = ?, mail = ?, fodselsdato = ?, 
         kjonn = ?, medlemSidenDato = ?, kontigentstatus = ?
         WHERE id = ?');
 
-        $query->bind_param('sssiissisii', $this->fornavn, $this->etternavn, 
-        $this->adresse, $this->postnummer, $this->tlf, $this->mail, $this->fodselsdato, 
-        $this->kjonn, $this->dato, $this->kontigentstatus, $this->id);
-
+        //Setter inn verdier
+        $query->bind_param('sssiissisii', $this->fornavn, 
+        $this->etternavn, $this->adresse, $this->postnummer, 
+        $this->tlf, $this->mail, $this->fodselsdato, $this->id,
+        $this->kjonn, $this->dato, $this->kontigentstatus);
         $query->execute();
         $query->close();
 
 
-        if (in_array('roller', $endringer)){
-            $delete = $con->prepare('DELETE FROM rolleregister  
+        //Sletter eksisterende atributter
+
+        if (in_array('roller', $endringer)){        //Sletter roller
+            $delete = $con->prepare('DELETE 
+                FROM rolleregister  
                 WHERE mid=' . $this->id
             );
             $delete->execute();
             $delete->close();
         }
             
-        if (in_array('interesser', $endringer)){
-            $delete = $con->prepare('DELETE FROM interesseregister  
+        if (in_array('interesser', $endringer)){    //Sletter interesser
+            $delete = $con->prepare('DELETE 
+                FROM interesseregister  
                 WHERE mid=' . $this->id
             );
             $delete->execute();
             $delete->close();
         }
 
-        if (in_array('aktiviteter', $endringer)){
-            $delete = $con->prepare('DELETE FROM aktivitetspåmelding  
+        if (in_array('aktiviteter', $endringer)){   //Sletter aktiviteter
+            $delete = $con->prepare('DELETE 
+                FROM aktivitetspåmelding  
                 WHERE mid=' . $this->id
             );
             $delete->execute();
@@ -353,7 +381,9 @@ class medlem{
         }       
 
 
-        if (in_array('roller', $endringer)){
+        //Legger inn nye atributter
+
+        if (in_array('roller', $endringer)){        //Setter inn roller
 
             foreach ($this->roller as $rolle){
                 $query = "INSERT INTO rolleregister (mid, rid)
@@ -366,7 +396,7 @@ class medlem{
             }                
         }
         
-        if (in_array('interesser', $endringer)){
+        if (in_array('interesser', $endringer)){    //Setter inn interesser
 
             foreach ($this->interesser as $interesse){
                 $query = "INSERT INTO interesseregister (mid, iid)
@@ -380,7 +410,7 @@ class medlem{
         }
         
 
-        if (in_array('aktiviteter', $endringer)){
+        if (in_array('aktiviteter', $endringer)){   //Setter inn aktiviteter
 
             foreach ($this->aktiviteter as $aktivitet){
                 $query = "INSERT INTO aktivitetspåmelding (mid, aid)
@@ -393,12 +423,8 @@ class medlem{
             }                
         }
         $con->close();
-
     }
-    
 }
-
-
 
 
 

@@ -1,4 +1,7 @@
 <?php
+//Klasse for aktiviteter.
+//Metoder tar array med verdier som parameter
+
 require '../lib/medlem.class.php';
 
 class aktivitet{
@@ -6,10 +9,9 @@ class aktivitet{
     private $ansvarlig_id;
     private $dato;
 
-    private function setVerdier($arr){             //Lager objekt fra array
+    private function setVerdier($arr){                  //Lager objekt fra array
 
         foreach($arr as $k => $v){
-
             switch($k){
                 case 'aktivitet':   $this->navn = $v;           break;
                 case 'leder':       $this->ansvarlig_id = $v;   break;        
@@ -18,7 +20,7 @@ class aktivitet{
         }
     }
 
-    public static function sjekkOmGyldig($arr){        //Henter array med evt feilmeldinger
+    public static function sjekkOmGyldig($arr){         //Henter array med evt feilmeldinger
     
         $messages = array();    //Lagrer feilmeldinger i array
 
@@ -34,26 +36,31 @@ class aktivitet{
             $messages[] = "Du må fylle inn datoen til aktiviteten";  
         }
     
-        return $messages;
+        return $messages;       //Returnerer feilmeldinger
     }
     
-    public static function lagAktivitet($arr){
+    public static function lagAktivitet($arr){          //Lager objekt
         
-        $obj = new aktivitet();
-        $obj->setVerdier($arr);
-        return $obj;
+        $obj = new aktivitet();                         
+        $obj->setVerdier($arr);                         //Setter inn verdier fra array
+        return $obj;                                    //Returnerer objekt
     }
 
-    public function sendTilDB(){
-        $con = dbConnect();
-        $m_query = $con->prepare('INSERT INTO aktiviteter (aktiviteter.navn, 
+    public function sendTilDB(){                        //Sender verdier i obj til DB
+
+        $con = dbConnect();                             //Lager mysqli
+
+        //Prepared statement
+        $query = $con->prepare('INSERT INTO aktiviteter (aktiviteter.navn, 
         aktiviteter.ansvarlig_id, aktiviteter.dato)
         VALUES(?,?,?)');
 
-        $m_query->bind_param('sss', $this->navn, 
+        //Setter inn parametere
+        $query->bind_param('sss', $this->navn, 
         $this->ansvarlig_id, $this->dato);
 
-        $m_query->execute();
+        //Kjører spørring
+        $query->execute();
     }
 }
 
