@@ -1,8 +1,8 @@
 <?php
 
-function dbConnect(){
+function dbConnect(){   //Returnerer mysqli
 
-    $user = 'root';
+    $user = 'root';     
     $password = '';
     $db = 'test2_klubbdb';
 

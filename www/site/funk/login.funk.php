@@ -3,22 +3,20 @@ require '../lib/medlem.class.php';
 
 if(isset($_REQUEST['loggin'])){
 
-
+    //Spørring - Henter passord
     $query = "SELECT passordliste.passord, medlemmer.mail
     FROM medlemmer
     JOIN passordliste ON passordliste.mid = medlemmer.id
     WHERE medlemmer.mail='" . $_REQUEST["mail"] . "'";
 
 
-    
     $con = dbConnect();
-
     $result = mysqli_query($con, $query);    
     
-    if($result->num_rows === 0){                        //Sjekker om tom
+    if($result->num_rows === 0){               //Sjekker om tom
         $brukerFunnet = false;
     }
-    else{$brukerFunnet = true;}                         //Setter funnet som verdi
+    else{$brukerFunnet = true;}                //Setter funnet som verdi
 
     
 
@@ -34,16 +32,17 @@ if(isset($_REQUEST['loggin'])){
 
             session_start();                            //Oppretter session
 
-            $_SESSION['bruker']['innlogget'] = true;    //Gir array verdi
-            $_SESSION['bruker']['medlem'] = serialize($medlem);
+            $_SESSION['bruker']['innlogget'] = true;    //Gir array verdier
+            $_SESSION['bruker']['medlem'] = serialize($medlem); //Sender obj
 
             header("Location: ../../index.php");    //Sender til forsiden
             exit;
 
             
         }
+        //Feilmeldinger dersom brukernavn/passord ikke samsvarer
         else{echo "Du har tastet inn feil brukernavn eller passord";}
-    }
+    }   
     else{echo "Du har tastet inn feil brukernavn eller passord";}
 
     mysqli_close($con);

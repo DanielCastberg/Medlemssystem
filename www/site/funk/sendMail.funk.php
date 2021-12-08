@@ -5,7 +5,7 @@ require '../inc/phpmailer/PHPMailer.php';           //Legger til phpmailer filer
 require '../inc/phpmailer/SMTP.php';
 require '../inc/phpmailer/Exception.php';
 
-use PHPMailer\PHPMailer\PHPMailer;                  //Definer navn
+use PHPMailer\PHPMailer\PHPMailer;                  //Definer namespace
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
@@ -19,8 +19,8 @@ if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
-if ((!in_array('admin', $brukerArr['roller'])) &&
-    (!in_array('admin', $brukerArr['roller']))){     //Sjekker om admin
+if ((in_array('admin', $brukerArr['roller'])) ||
+    (in_array('leder', $brukerArr['roller']))){     //Sjekker om admin
     header("Location: ../../index.php");
     exit();
 }

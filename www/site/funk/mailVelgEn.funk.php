@@ -1,16 +1,20 @@
 <?php
 require '../lib/medlem.class.php';
 
+//Kjører dersom bruker er valgt
 if(isset($_POST['contact-send'])){
 
+    //Legger valgt medlem i array
     $arr = array();
     $arr[] = $_POST['medlem'];
 
-    $json = json_encode($arr);              //Bruker json til å sende array som cookie
+    //Bruker json til å sende array som cookie
+    $json = json_encode($arr);              
 
-    setcookie('mottakere', '', time() - 21600);
+    //Lager cookie
     setcookie('mottakere', $json, time() + 21600);
     
+    //Henviser til mailsiden
     header("Location: sendMail.funk.php");
     exit();
 }

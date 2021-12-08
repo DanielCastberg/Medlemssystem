@@ -3,12 +3,14 @@ require '../inc/mysqli.inc.php';
 
 session_start();
 
-if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
+//Sender brukeren til login-siden  om ikke innlogget
+if(!isset($_SESSION['bruker']['innlogget']) ||         
 ($_SESSION['bruker']['innlogget'] !== true)) {
 header("Location: ./login.funk.php");
 exit();
 }
 
+//Spørring - medlemmer
 $sqlM = "SELECT medlemmer.id, medlemmer.fornavn, medlemmer.etternavn, 
 aktivitetspåmelding.aid, aktiviteter.navn, aktiviteter.dato
 FROM medlemmer
@@ -16,25 +18,27 @@ INNER JOIN aktivitetspåmelding on aktivitetspåmelding.mid = medlemmer.id
 INNER JOIN aktiviteter on aktivitetspåmelding.aid = aktiviteter.id
 ORDER BY medlemmer.id";                                  //Definerer spørring
 
-
+//Spørring - aktiviteter
 $sqlA = "SELECT aktiviteter.navn, aktiviteter.dato, medlemmer.fornavn
 FROM aktiviteter
 INNER JOIN medlemmer on aktiviteter.ansvarlig_id = medlemmer.id
 ORDER BY aktiviteter.dato DESC";                       
 
+
+//Mysqli
 $con = dbConnect();
 
-$result = mysqli_query($con, $sqlM);                          //Henter med spørring
+//Kjører spørringer
+$result = mysqli_query($con, $sqlM);                        
 $medlemmer = mysqli_fetch_all($result, MYSQLI_ASSOC);        
-mysqli_free_result($result);                                 //frigir minne
-
+mysqli_free_result($result);                              
 
 $result = mysqli_query($con, $sqlA); 
 $aktiviteter = mysqli_fetch_all($result, MYSQLI_ASSOC);
 mysqli_free_result($result);                                
 
-
-mysqli_close($con);                                          //Lukker DB-connection
+//Lukker Mysqli
+mysqli_close($con); 
 
 ?>
 <!doctype html>

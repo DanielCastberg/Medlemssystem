@@ -3,14 +3,16 @@ require 'site/lib/medlem.class.php';
 
 session_start();
 
+//Sender brukeren til login-siden  om ikke innlogget
 if(!isset($_SESSION['bruker']['innlogget']) ||
     $_SESSION['bruker']['innlogget'] !== true) {
     header("Location: site/funk/login.funk.php");
     exit();
 }
 
+//Henter array fra session
  $obj = unserialize($_SESSION['bruker']['medlem']);
- $arr = $obj->getArr(); 
+ $arr = $obj->getArr();     
 ?>
 
 
@@ -31,7 +33,8 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
                 Filtrer medlemmer </a><br><br>   
              
             
-            <?php
+            <?php       //Lenker til beskyttede sider
+
                 if(in_array("admin", $arr['roller'])){
                     echo '<a href = "site/funk/nyttMedlem.funk.php">
                             Nytt medlem </a><br> 

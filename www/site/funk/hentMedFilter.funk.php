@@ -3,7 +3,8 @@ require '../lib/medlem.class.php';
 
 session_start();
 
-if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
+//Sender brukeren til login-siden om ikke innlogget
+if(!isset($_SESSION['bruker']['innlogget']) ||        
     ($_SESSION['bruker']['innlogget'] !== true)) {
     header("Location: ./login.funk.php");
     exit();
@@ -11,17 +12,19 @@ if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
+//Sender brukeren til forsiden om ikke innlogget som admin
 if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
     header("Location: ../../index.php");
     exit();
 }
 
-$where = "";
+$where = "";        //Endrer spørring avhengig av valgte parameter
 $join  = ""; 
 if(isset($_POST['contact-send'])){
 
     $where = "WHERE ";
 
+    //Sjekker kontigentstatus
     switch($_POST['Kontigentstatus']){
         case 'ikkebetalt': $where .= "kontigentstatus = 0"; break;
         case 'betalt'    : $where .= "kontigentstatus = 1"; break;
@@ -34,6 +37,7 @@ if(isset($_POST['contact-send'])){
         }
     }
     
+    //Sjekker roller
     switch($_POST['rolle']){
         case 'Admin':  $where .= "rolleregister.rid = 1"; break;
         case 'Leder':  $where .= "rolleregister.rid = 2"; break;
@@ -49,6 +53,7 @@ if(isset($_POST['contact-send'])){
         }
     }
     
+    //Sjekker interesser
     switch($_POST['interesse']){
         case 'Fotball': $where .= "interesseregister.iid = 1"; break;
         case 'Dart':    $where .= "interesseregister.iid = 2"; break;
@@ -57,7 +62,7 @@ if(isset($_POST['contact-send'])){
         default: $forrige = FALSE;
     }
 
-    
+    //Sjekker aktiviteter
     if(!str_contains($_POST['aktivitet'], "alle")){
         $join  .= "JOIN aktivitetspåmelding on aktivitetspåmelding.mid = medlemmer.id ";
         if(!str_contains($_POST['rolle'], "alle") || !str_contains($_POST['interesse'], "alle") || 
@@ -67,7 +72,8 @@ if(isset($_POST['contact-send'])){
         $where .= "aktivitetspåmelding.aid = " . $_POST['aktivitet'];
     }
 
-    if (strlen($where) < 7){$where = "";    //Tom streng dersom ingen filter sendes
+    //Tom streng dersom ingen filter sendes
+    if (strlen($where) < 7){$where = "";    
     }
 
 }

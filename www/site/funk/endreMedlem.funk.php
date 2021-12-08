@@ -3,7 +3,8 @@ require '../lib/medlem.class.php';
 
 session_start();
 
-if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
+//Sender brukeren til login-siden  om ikke innlogget
+if(!isset($_SESSION['bruker']['innlogget']) ||       
     ($_SESSION['bruker']['innlogget'] !== true)) {
     header("Location: ./login.funk.php");
     exit();
@@ -11,42 +12,47 @@ if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
-if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
+//Sender brukeren til forsiden om ikke innlogget som admin
+if (!in_array('admin', $brukerArr['roller'])){ 
     header("Location: ../../index.php");
     exit();
 }
 
-if (!isset($_COOKIE['mail'])){                      //Sjekker om cookie er laget
+//Sjekker om cookie er laget
+if (!isset($_COOKIE['mail'])){                      
     header("Location: velgEndring.funk.php");
     exit();
 }
 
-////////////////////////////////////////////////////////////////
+
 
 function hentVerdi($i){         //Sjekker om index fins
-    if (isset($_POST[$i])) {echo $_POST[$i];} //Printer i forms
+    if (isset($_POST[$i])) {echo $_POST[$i];} //Printer i <form>
 }
 
-$medlemObj;
+//Deklarerer obj utenfor løkke
+$medlemObj; 
 
-if (isset($_COOKIE['mail'])){
+//Henter medlem med gitt mail fra db
+if (isset($_COOKIE['mail'])){  
     $medlemObj = medlem::medlemFraDB($_COOKIE['mail']);
     $medlemObj->verdiTilID();
-    
-    
-}       //Inneholder array før endring
+}       
 
 
 if (isset($_POST['contact-send'])) {
+
+    //Sjekker om feilmeldinger
     $feilmeldinger = medlem::sjekkOmGyldig($_POST);
-    $endringer = array();            //Er innhold endret?       
+    $endringer = array();            //Array med endringer       
 
-    if(empty($feilmeldinger)){ 
+    if(empty($feilmeldinger)){      
 
+        //Henter verdier fra obj
         $medlemArr = $medlemObj->getArr();
         
+        //Looper og sjekker om atributter er endret
         $arr = array("interesser", "aktiviteter", "roller");
-        
         foreach($arr as $kategori){
             if (!empty($medlemArr[$kategori]) && isset($_POST[$kategori])){
                 sort($_POST[$kategori]); sort($medlemArr[$kategori]);
@@ -54,26 +60,18 @@ if (isset($_POST['contact-send'])) {
                 if((array_count_values($_POST[$kategori])) != 
                    (array_count_values($_POST[$kategori]))){
                         $endringer[] = $kategori;
-                    
                 }elseif (!empty(array_diff_assoc($medlemArr[$kategori], $_POST[$kategori]))){
                     $endringer[] = $kategori;
 
                 }elseif($_POST[$kategori] != $_POST[$kategori]){
                      $endringer[] = $kategori;
                 }
-
             }elseif(!empty($medlemArr[$kategori]) xor isset($_POST[$kategori])){
                 $endringer[] = $kategori;
             }
-            
-            echo $kategori . " <br>";
-            print_r($_POST[$kategori]); 
-            echo "<br>";
-            print_r($medlemArr[$kategori]);
-            echo "<br> <br>";
         }
 
-
+        //Sjekker om andre verdier er endret
         foreach($medlemArr as $k => $v){    
             if (($k != "id") && ($k != "interesser") && 
             ($k != "roller") && ($k != "aktiviteter")){
@@ -83,33 +81,35 @@ if (isset($_POST['contact-send'])) {
             }
         }            
 
+        //Oppdatterer $medlemObj
         $_POST['id'] = $medlemArr['id'];
         $medlemObj = medlem::lagMedlem($_POST);
         $medlemObj->verdiTilID();
         
+        //Oppdatterer DB om det er gjort endringer
         if(!empty($endringer)){
-
             $medlemObj->endreDB($endringer);
         }
-        
     }
     else {
+        //Skriver ut evt. feilmeldinger
         foreach($feilmeldinger as $feilmelding){
             echo "<br>" . $feilmelding;
         }
     }   
 
-    if((!empty($endringer)) && (empty($feilmeldinger))){                //Tilbakemelding om endret
+    //Tilbakemelding om endret
+    if((!empty($endringer)) && (empty($feilmeldinger))){                
         echo ("<br>Medlemmet er endret!<br>");
     }
     else{
         echo "<br>Medlemmet er ikke endret!<br>";
-        
     }        
     $_POST = $medlemObj->getArr();
 }
 
-else{   //Sendes til form
+//Sendes til form med post
+else{   
 
     $_POST = $medlemObj->getArr();
 }             

@@ -4,7 +4,8 @@ require '../lib/medlem.class.php';
 
 session_start();
 
-if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
+//Sender brukeren til login-siden om ikke innlogget
+if(!isset($_SESSION['bruker']['innlogget']) ||         
     ($_SESSION['bruker']['innlogget'] !== true)) {
     header("Location: ./login.funk.php");
     exit();

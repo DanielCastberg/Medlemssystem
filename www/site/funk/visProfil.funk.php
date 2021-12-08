@@ -1,6 +1,7 @@
 <?php
 require '../lib/medlem.class.php';
 
+//Sender brukeren til login-siden om ikke innlogget
 session_start();
 if(!isset($_SESSION['bruker']['innlogget']) ||
     $_SESSION['bruker']['innlogget'] !== true) {
@@ -8,6 +9,7 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
     exit();
 }
 
+//Henter obj fra session
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
 $brukerArr = $brukerObj->getArr();
 
@@ -47,7 +49,7 @@ if (isset($_POST['contact-send'])){             //Bildet er sendt
         $mappePath = "../img/" . $nyttNavn;
 
         $mappeRef = opendir('../img/');      //Mappe åpnes
-        while($neste = readdir($mappeRef)){ //Sjekker filer i katalog
+        while($neste = readdir($mappeRef)){  //Sjekker filer i katalog
             
             //Fjerner gammelt bilde
             if (($brukerArr['id'] . ".jpg") == $neste)
