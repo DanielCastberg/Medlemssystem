@@ -29,7 +29,7 @@ if(isset($_REQUEST['loggin'])){
 
             mysqli_close($con);
             $medlem = medlem::medlemFraDB($r[0]['mail']);
-
+ 
             session_start();                            //Oppretter session
 
             $_SESSION['bruker']['innlogget'] = true;    //Gir array verdier
