@@ -2,23 +2,26 @@
 require '../lib/medlem.class.php';
 
 
-$where = "";
+$where = "";    //Endrer spørring avhengig av valgte parameter
 $join = "";
 if((isset($_POST['filter'])) || (isset($_POST['contact-send']))){
 
     $where = "WHERE "; 
 
+    //Sjekker kontigentstatus
     switch($_POST['Kontigentstatus']){
         case 'ikkebetalt': $where .= "kontigentstatus = 0"; break;
         case 'betalt'    : $where .= "kontigentstatus = 1"; break;
     }
-
+    
+    //Sjekker roller
     if(!str_contains($_POST['rolle'], "alle")){
         $join  .= "JOIN rolleregister on rolleregister.mid = medlemmer.id ";
         if(!str_contains($_POST['Kontigentstatus'], "alle")){
             $where .= " AND ";
         }
     }
+    
     
     switch($_POST['rolle']){
         case 'Admin':  $where .= "rolleregister.rid = 1"; break;
@@ -27,6 +30,7 @@ if((isset($_POST['filter'])) || (isset($_POST['contact-send']))){
         default: $forrige = FALSE;
     }
 
+    //Sjekker interesser
     if(!str_contains($_POST['interesse'], "alle")){
         $join  .= "JOIN interesseregister on interesseregister.mid = medlemmer.id ";
         if(!str_contains($_POST['rolle'], "alle") || 
@@ -44,30 +48,33 @@ if((isset($_POST['filter'])) || (isset($_POST['contact-send']))){
     }
 
     
+    //Sjekker aktiviteter
     if(!str_contains($_POST['aktivitet'], "alle")){
         $join  .= "JOIN aktivitetspåmelding on aktivitetspåmelding.mid = medlemmer.id ";
-        if(!str_contains($_POST['rolle'], "alle") || !str_contains($_POST['interesse'], "alle") || 
+        if(!str_contains($_POST['rolle'], "alle")   || 
+         !str_contains($_POST['interesse'], "alle") || 
         (!str_contains($_POST['Kontigentstatus'], "alle"))){
             $where .= " AND ";
         }
         $where .= "aktivitetspåmelding.aid = " . $_POST['aktivitet'];
     }
-
-    if (strlen($where) < 7){$where = "";    //Tom streng dersom ingen filter sendes
+    //Tom streng dersom ingen filter sendes
+    if (strlen($where) < 7){$where = "";    
     }
 
 }
 
-
+//Dynamisk spørring
 $sql = 'SELECT DISTINCT id, fornavn, etternavn, mail
 FROM medlemmer ' . $join . ' ' .
 $where . ' ORDER by Kontigentstatus DESC, id; ';   
 
+//Henter aktuelle
 $con = dbConnect();
-$result = mysqli_query($con, $sql);                          //Henter med spørring
+$result = mysqli_query($con, $sql);                          
 $medlemmer = mysqli_fetch_all($result, MYSQLI_ASSOC);
-mysqli_free_result($result);                                 //frigir minne
-mysqli_close($con);                                          //Lukker DB-connection
+mysqli_free_result($result);                      
+mysqli_close($con);                                         
 
 
 if(isset($_POST['contact-send'])){
@@ -77,8 +84,10 @@ if(isset($_POST['contact-send'])){
         $arr[] = $medlem['mail'];
     }
 
-    $json = json_encode($arr);              //Bruker json til å sende array som cookie
+    //Bruker json for å sende array som cookie
+    $json = json_encode($arr);             
 
+    //Oppretter cookie
     setcookie('mottakere', '', time() - 21600);
     setcookie('mottakere', $json, time() + 21600);
     

@@ -13,13 +13,15 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
-if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
+//Sjekker om admin
+if (!in_array('admin', $brukerArr['roller'])){     
     header("Location: ../../index.php");
     exit();
 }
 
 if (isset($_POST['contact-send']) && isset($_POST['medlem'])){
-    
+
+    //Sender valgt medlem som cookie
     setcookie('mail', $_POST['medlem'], time() - 21600);
     setcookie('mail', $_POST['medlem'], time() + 21600);
     

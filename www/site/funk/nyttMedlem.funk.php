@@ -11,7 +11,7 @@ if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
-if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
+if (!in_array('admin', $brukerArr['roller'])){          //Sjekker om admin
     header("Location: ../../index.php");
     exit();
 }
@@ -22,14 +22,14 @@ function settVerdi($i){
 }
 
 if (isset($_POST['contact-send'])){
-    $feilmeldinger = medlem::sjekkOmGyldig($_POST);
+    $feilmeldinger = medlem::sjekkOmGyldig($_POST);     //Ser etter feilmeldinger
 
     if(empty($feilmeldinger)){
-        $medlem = medlem::lagMedlem($_POST);
+        $medlem = medlem::lagMedlem($_POST);            //Lager obj med verdiene
         
         $medlem->sendTilDB();
 
-        foreach ($_POST as $k=>$v) {        //Sletter data i $_post
+        foreach ($_POST as $k=>$v) {                    //Sletter data i $_post
             unset($_POST[$k]);
         }
 
@@ -37,6 +37,7 @@ if (isset($_POST['contact-send'])){
 
     }
     else {    
+        //Printer feilmeldinger
         echo "<b>Venligst fyll inn alle feltene riktig:</b><br>";
         foreach($feilmeldinger as $feilmelding){
             echo $feilmelding . "<br>";

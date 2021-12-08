@@ -1,17 +1,17 @@
 <?php
 require '../lib/medlem.class.php';
 
-require '../inc/phpmailer/PHPMailer.php';           //Legger til phpmailer filer
+require '../inc/phpmailer/PHPMailer.php';        //Legger til phpmailer filer
 require '../inc/phpmailer/SMTP.php';
 require '../inc/phpmailer/Exception.php';
 
-use PHPMailer\PHPMailer\PHPMailer;                  //Definer namespace
+use PHPMailer\PHPMailer\PHPMailer;               //Definer namespace
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 session_start();
 
-if(!isset($_SESSION['bruker']['innlogget']) ||          //Sjekker om innlogget
+if(!isset($_SESSION['bruker']['innlogget']) ||     //Sjekker om innlogget
     ($_SESSION['bruker']['innlogget'] !== true)) {
     header("Location: ./login.funk.php");
     exit();
@@ -25,12 +25,13 @@ if ((in_array('admin', $brukerArr['roller'])) ||
     exit();
 }
 
-if (!isset($_COOKIE['mottakere'])){                      //Sjekker om cookie er laget
+if (!isset($_COOKIE['mottakere'])){                 //Sjekker om cookie fins
     header("Location: ../../index.php");
     exit();
 }
 
-$cookie = $_COOKIE['mottakere'];
+
+$cookie = $_COOKIE['mottakere'];            //Henter array med mail fra cookie
 $cookie = stripslashes($cookie);
 $mottakere = json_decode($cookie, TRUE);   
 
@@ -38,17 +39,17 @@ $avsender = "phpgruppe25@gmail.com";
 
 if (isset($_POST['contact-send'])){
 
-    $mail = new PHPMailer();                    //Lag instans av phpmailer
-    $mail->isSMTP();                            //Sett mailer til smtp
+    $mail = new PHPMailer();                    //Lager instans av phpmailer
+    $mail->isSMTP();                            //Sett mailer som smtp
     $mail->Host = "smtp.gmail.com";             //Definer smtp host
     $mail -> SMTPAuth = "true";                 //SMTP autotentikasjon
     $mail->SMTPSecure = "tls";                  //Sett type kryptering
-    $mail->Port = "587";                        //Sett port til connect smtp
-    $mail->Username = "phpgruppe25@gmail.com";                //Sett gmail
-    $mail->Password = "123qwerty!";             //Sett passord
+    $mail->Port = "587";                        //Sett port 
+    $mail->Username = "phpgruppe25@gmail.com";  //Avsender - Mail
+    $mail->Password = "123qwerty!";             //Avsender - Passord
 
     $mail->Subject = $_POST['emne'];            //Sett emne
-    $mail->SetFrom("phpgruppe25@gmail.com");    //Avsender
+    $mail->SetFrom("phpgruppe25@gmail.com");    //Avsenderadresse
     $mail->Body = $_POST['melding'];            //Innhold body
     foreach ($mottakere as $mottaker){
         $mail->addAddress($mottaker);           //Sett mottakere
