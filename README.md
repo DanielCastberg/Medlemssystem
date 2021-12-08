@@ -1,13 +1,23 @@
 # Medlemssystem
 IS-115 - Prosjektgruppe 25
+Medlemmer:
+-Erik Daniel Staalesen Castberg
+-Steffen Tendvall Abrahamsen
+
+Url til forsiden:
+https://localhost/medlemssystem/www/index.php
+Derfra vil bruker bruker automatisk sendes til innloggingssiden.
 
 Logg paa som bruker med id 1 eller 2 for aa bli merket som "admin" paa siden. Andre brukere faar logge inn
 men er ikke gitt tilgang til all funksjonalitet som finnes paa nettsiden. 
 
 Login   (1): post@mail.com 
+
 Passord (1): qwerty
 
+
 Login   (2): post1@mail.com
+
 Passord (2): qwerty
 
 Andre mailadresser kan benyttes. Passordene er satt etter medlemmenes id'er:

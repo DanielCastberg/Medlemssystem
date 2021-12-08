@@ -63,7 +63,7 @@ if (isset($_POST['contact-send'])){             //Bildet er sendt
         move_uploaded_file($filTmpNavn, $mappePath);
         
         closedir($mappeRef);
-        header("Location: ./visProfil.funk.php");  //Refresher side
+        header("Refresh:0");  //Refresher side
         exit();
 
     }

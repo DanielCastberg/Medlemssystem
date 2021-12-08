@@ -57,7 +57,7 @@ if (isset($_POST['contact-send'])) {
             if (!empty($medlemArr[$kategori]) && isset($_POST[$kategori])){
                 sort($_POST[$kategori]); sort($medlemArr[$kategori]);
 
-                if((array_count_values($_POST[$kategori])) != 
+                if((array_count_values($medlemArr[$kategori])) != 
                    (array_count_values($_POST[$kategori]))){
                         $endringer[] = $kategori;
                 }elseif (!empty(array_diff_assoc($medlemArr[$kategori], $_POST[$kategori]))){
