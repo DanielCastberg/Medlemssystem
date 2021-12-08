@@ -19,8 +19,8 @@ if(!isset($_SESSION['bruker']['innlogget']) ||     //Sjekker om innlogget
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
-if ((in_array('admin', $brukerArr['roller'])) ||
-    (in_array('leder', $brukerArr['roller']))){     //Sjekker om admin
+if ((!in_array('admin', $brukerArr['roller'])) &&
+    (!in_array('leder', $brukerArr['roller']))){     //Sjekker roller
     header("Location: ../../index.php");
     exit();
 }
