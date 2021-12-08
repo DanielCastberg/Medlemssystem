@@ -86,6 +86,7 @@ if (isset($_POST['contact-send'])) {
         $medlemObj = medlem::lagMedlem($_POST);
         $medlemObj->verdiTilID();
         
+
         //Oppdatterer DB om det er gjort endringer
         if(!empty($endringer)){
             $medlemObj->endreDB($endringer);

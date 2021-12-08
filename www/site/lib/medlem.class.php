@@ -345,8 +345,9 @@ class medlem{
         //Setter inn verdier
         $query->bind_param('sssiissisii', $this->fornavn, 
         $this->etternavn, $this->adresse, $this->postnummer, 
-        $this->tlf, $this->mail, $this->fodselsdato, $this->id,
-        $this->kjonn, $this->dato, $this->kontigentstatus);
+        $this->tlf, $this->mail, $this->fodselsdato,
+        $this->kjonn, $this->dato, $this->kontigentstatus,
+        $this->id);
         $query->execute();
         $query->close();
 

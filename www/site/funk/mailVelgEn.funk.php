@@ -12,6 +12,7 @@ if(isset($_POST['contact-send'])){
     $json = json_encode($arr);              
 
     //Lager cookie
+    setcookie('mottakere', "", time() - 21600);
     setcookie('mottakere', $json, time() + 21600);
     
     //Henviser til mailsiden

@@ -22,7 +22,7 @@ if (!in_array('admin', $brukerArr['roller'])){
 if (isset($_POST['contact-send']) && isset($_POST['medlem'])){
 
     //Sender valgt medlem som cookie
-    setcookie('mail', $_POST['medlem'], time() - 21600);
+    setcookie('mail', "", time() - 21600);
     setcookie('mail', $_POST['medlem'], time() + 21600);
     
     header("Location: endreMedlem.funk.php");
