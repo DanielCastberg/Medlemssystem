@@ -45,7 +45,7 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
                           <a href = "site/funk/nyAktivitet.funk.php">
                             Legg til aktiviteter </a><br>';
                 }    
-                if((in_array("admin", $arr['roller'])) || (in_array("admin", $arr['leder']))){
+                if((in_array("admin", $arr['roller'])) || (in_array("leder", $arr['roller']))){
                     echo '<br><a href = "site/funk/mailVelgMange.funk.php">
                             Send Mail til en gruppe</a><br>';
                     echo '<a href = "site/funk/mailVelgEn.funk.php">

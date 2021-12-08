@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 03, 2021 at 12:27 AM
+-- Generation Time: Dec 08, 2021 at 03:52 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 8.0.9
 
@@ -157,14 +157,14 @@ INSERT INTO `medlemmer` (`id`, `fornavn`, `etternavn`, `adresse`, `postnummer`, 
 (1, 'Daniel', 'Castberg', 'Nordli 10', 4444, 12345678, 'post@mail.com', '1998-03-13', 1, '2020-01-01', 1),
 (2, 'Steffen', 'Abrahamsen', 'Strandgaten 1', 1111, 23456789, 'post1@mail.com', '1994-01-01', 1, '2020-01-01', 1),
 (3, 'Oda', 'Strand', 'Heia 123', 2222, 12345432, 'post2@mail.com', '2000-01-01', 0, '2020-02-02', 0),
-(4, 'Arne', 'Strand', 'Svingen 1', 2222, 12349876, 'post4@mail.com', '1999-01-01', 1, '2005-01-01', 1),
-(5, 'Hanne', 'Hansen', 'Skog 1', 2222, 23453245, 'post5@mail.no', '1985-10-09', 0, '2021-10-12', 0),
-(6, 'Arne', 'Arnesen', 'Skog 4', 1111, 23457245, 'post7@mail.no', '1985-10-15', 1, '2021-10-12', 1),
-(7, 'Anne', 'Holt', 'Skog 6', 1111, 99999999, 'post5@mail.com', '1984-10-17', 0, '2021-10-21', 1),
-(8, 'Terje', 'Haug', 'Gata 98', 3333, 45674567, 'post55@mail.com', '1997-09-09', 1, '2021-10-27', 0),
-(9, 'Knut', 'Sæther', 'SIA 123', 2222, 23453456, 'post12@mail.com', '2000-10-07', 1, '2021-10-21', 1),
-(10, 'Nicolai', 'Bjørntvedt', 'Sentrum123', 1111, 12349999, 'post17@mail.no', '2000-01-01', 1, '2021-10-20', 1),
-(11, 'Ida', 'Olsen', 'Stranda 123', 4444, 56785678, 'post12@mail.dk', '2021-10-06', 0, '2021-10-07', 1);
+(4, 'Arne', 'Strand', 'Svingen 1', 2222, 12349876, 'post3@mail.com', '1999-01-01', 1, '2005-01-01', 1),
+(5, 'Hanne', 'Hansen', 'Skog 1', 2222, 23453245, 'post4@mail.com', '1985-10-09', 0, '2021-10-12', 0),
+(6, 'Arne', 'Arnesen', 'Skog 4', 1111, 23457245, 'post5@mail.com', '1985-10-15', 1, '2021-10-12', 1),
+(7, 'Anne', 'Holt', 'Skog 6', 1111, 99999999, 'post6@mail.com', '1984-10-17', 0, '2021-10-21', 1),
+(8, 'Terje', 'Haug', 'Gata 98', 3333, 45674567, 'post7@mail.com', '1997-09-09', 1, '2021-10-27', 0),
+(9, 'Knut', 'Sæther', 'SIA 123', 2222, 23453456, 'post8@mail.com', '2000-10-07', 1, '2021-10-21', 1),
+(10, 'Nicolai', 'Bjørntvedt', 'Sentrum123', 1111, 12349999, 'post9@mail.com', '2000-01-01', 1, '2021-10-20', 1),
+(11, 'Ida', 'Olsen', 'Stranda 123', 4444, 56785678, 'post10@mail.com', '2021-10-06', 0, '2021-10-07', 1);
 
 -- --------------------------------------------------------
 

@@ -51,16 +51,31 @@ if(isset($_REQUEST['loggin'])){
 ?>
 
 
+<html>
+<header>
+    <h2>NEO ungdomsklubb</h2>
+    <h3>Login</h3>
+</header>
+<body>
+    <p>
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+        <div class="container">
+            <label for="mail"><b>Mailadresse</b></label>
+            <input type="text" placeholder="Skriv inn mailadresse" name="mail" required>
 
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-    <div class="container">
-        <label for="mail"><b>Mailadresse</b></label>
-        <input type="text" placeholder="Skriv inn mailadresse" name="mail" required>
-
-            
-        <label for="passord"><b>Passord</b></label>
-        <input type="password" placeholder="Skriv inn Passord" name="passord" required>
-            
-        <input type="submit" name="loggin" value="Logg inn" />
-    </div>     
-</form>
+                
+            <label for="passord"><b>Passord</b></label>
+            <input type="password" placeholder="Skriv inn Passord" name="passord" required>
+                
+            <input type="submit" name="loggin" value="Logg inn" />
+        </div>     
+    </form>
+    <p>
+    (Bruk "post@mail.com" med passordet "qwerty" for å logge inn som admin.<br>
+    se README.md for mer informasjon om nettsiden
+    <p>
+    Laget av Prosjektgruppe 25 <br>
+    (Daniel Castberg og Steffen Abrahamsen)   
+    </p>
+</body>
+</html>

@@ -12,12 +12,6 @@ if(!isset($_SESSION['bruker']['innlogget']) ||
 $brukerObj = unserialize($_SESSION['bruker']['medlem']);
     $brukerArr = $brukerObj->getArr();
 
-//Sender brukeren til forsiden om ikke innlogget som admin
-if (!in_array('admin', $brukerArr['roller'])){     //Sjekker om admin
-    header("Location: ../../index.php");
-    exit();
-}
-
 $where = "";        //Endrer spørring avhengig av valgte parameter
 $join  = ""; 
 if(isset($_POST['contact-send'])){
