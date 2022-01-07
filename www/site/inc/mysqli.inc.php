@@ -7,7 +7,7 @@ function dbConnect(){   //Returnerer mysqli
     $db = 'klubbdb';
 
     $db = new mysqli('localhost', $user, $password, $db) or die("Tilkobling misslykket");
-  
+    mysqli_set_charset($db, 'utf8mb4');
     return $db;
 }
 
