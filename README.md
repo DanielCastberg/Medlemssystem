@@ -1,5 +1,5 @@
 # Medlemssystem
-IS-115 - Prosjektgruppe 25
+IS-115 (2021) - Prosjektgruppe 25
 Medlemmer:
 -Erik Daniel Staalesen Castberg
 -Steffen Tendvall Abrahamsen
