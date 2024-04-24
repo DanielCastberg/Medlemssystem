@@ -5,7 +5,7 @@ Medlemmer:
 -Steffen Tendvall Abrahamsen
 
 Github: 
-https://github.com/Hanemor/Medlemssystem.git
+https://github.com/DanielCastberg/Medlemssystem.git
 
 Url til forsiden: 
 https://localhost/medlemssystem/www/index.php
